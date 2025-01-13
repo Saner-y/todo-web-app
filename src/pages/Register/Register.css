@@ -1,0 +1,87 @@
+
+:root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Ensure the parent takes the full viewport height */
+    width: 100vw; /* Ensure the parent takes the full viewport width */
+    margin: 0; /* Remove default margin */
+    background-image: url('src/assets/register-background.png');
+    background-color: #FF6767;
+    background-size: cover;
+    background-position: center;
+}
+
+.title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #212427;
+    margin-bottom: 0.1em;
+    font-family: Montserrat, sans-serif;
+}
+
+.form {
+    background-color: #fff;
+    display: flex;
+    flex-direction: row;
+    padding: 2em;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 1300px; /* Adjust the width as needed */
+    height: 700px; /* Adjust the height as needed */
+    margin: 0 auto; /* Center the form horizontally */
+    align-items: flex-start; /* Align items to the start */
+}
+
+.register-image {
+    width: 30%;
+    height: 90%;
+    object-fit: fill;
+    object-position: center;
+    border-radius: 10px;
+    align-self: flex-end; /* Align the image to the start */
+}
+
+.form-input {
+    margin-left: auto; /* Push the form-input to start after the center */
+    width: 50%; /* Adjust the width as needed */
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 1.5em;
+    font-family: Montserrat, sans-serif;
+}
+
+.checkbox input {
+    width: 18px;
+    height: 18px;
+}
+
+.checkbox input:hover {
+    cursor: pointer;
+}
+
+.checkbox:hover {
+    cursor: pointer;
+}
+
+.sign-in {
+    color: #008BD9;
+}
+
+.sign-in:hover {
+    text-decoration: underline;
+    font-size: 18px;
+}
+
+.sign-in-question {
+    font-family: Montserrat, sans-serif;
+    font-size: 16px;
+    color: #212427;
+    margin-top: 0;
+}
