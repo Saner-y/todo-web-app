@@ -34,3 +34,14 @@
 .input::placeholder {
     color: #999999;
 }
+
+.visibility {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 20px;
+    color: #000;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
