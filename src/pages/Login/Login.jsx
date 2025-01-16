@@ -4,6 +4,7 @@ import {useAuth} from "../../hooks/useAuth.js";
 import MainButton from "../../components/buttons/MainButton/MainButton.jsx";
 import {toast, ToastContainer, Zoom} from "react-toastify";
 import './Login.css'
+import {useNavigate} from "react-router-dom";
 
 export default function Login() {
     const [isChecked, setIsChecked] = useState(false);
@@ -11,12 +12,14 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const {loginWithEmail, loginWithGoogle, loginWithTwitter, forgotPassword} = useAuth();
+    const navigate = useNavigate();
 
     const onSubmit = async () => {
         setLoading(true);
         try {
             const resp = await loginWithEmail({email, password});
             toast.success(resp);
+            navigate('/register');
         } catch (e) {
             toast.error(e.message);
         } finally {
@@ -73,7 +76,7 @@ export default function Login() {
                         <img src="src/assets/google-react.svg" alt="google" onClick={googleLogin} className="google"/>
                         <img src="src/assets/x-react.svg" alt="x" onClick={twitterLogin} className="x"/>
                     </div>
-                    <p>Don&#39;t have an account? <span className="create-account">Create One</span></p>
+                    <p>Don&#39;t have an account? <span onClick={() => {navigate('/register')}} className="create-account">Create One</span></p>
                 </div>
             </div>
             <img className="login-image" src="src/assets/login-react.png" alt="login-image"/>

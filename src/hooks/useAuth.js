@@ -1,5 +1,3 @@
-// src/hooks/useAuth.js
-// src/hooks/useAuth.js
 import {auth, firestore} from "../api/firebase.js";
 import {
     createUserWithEmailAndPassword,

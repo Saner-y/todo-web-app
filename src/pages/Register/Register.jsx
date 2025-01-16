@@ -4,6 +4,7 @@ import './Register.css'
 import MainButton from "../../components/buttons/MainButton/MainButton.jsx";
 import {useAuth} from "../../hooks/useAuth.js";
 import {ToastContainer, toast, Zoom} from 'react-toastify';
+import {useNavigate} from "react-router-dom";
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -31,6 +32,7 @@ export default function Register() {
     const [isChecked, setIsChecked] = useState(false);
     const [loading, setLoading] = useState(false);
     const register = useAuth().register;
+    const navigate = useNavigate();
 
     async function onSubmit() {
         setLoading(true);
@@ -50,9 +52,9 @@ export default function Register() {
 
 
     return (
-        <div className="form">
+        <div className="register-form">
             <img className="register-image" src="src/assets/register-image.png" alt="register-image"/>
-            <div className="form-input">
+            <div className="register-form-input">
                 <h2 className="title">Sign Up</h2>
                 {inputs.map(({ id, placeholder, icon, type }) => (
                     <MainInput
@@ -64,7 +66,7 @@ export default function Register() {
                         onChange={(e) => handleInputChange(e, id)}
                     />
                 ))}
-                <label className="checkbox"><input type="checkbox" onClick={() => setIsChecked(!isChecked)} checked={isChecked}/>I agree to all terms</label>
+                <label className="register-checkbox"><input type="checkbox" onClick={() => setIsChecked(!isChecked)} checked={isChecked}/>I agree to all terms</label>
                 {loading && <p>Registering...</p>}
                 <ToastContainer
                     position="top-right"
@@ -79,7 +81,7 @@ export default function Register() {
                     theme="light"
                     transition={Zoom}/>
                 {!loading && <MainButton text="Register" onClick={onSubmit}/>}
-                <p className="sign-in-question">Already have an account? <span className="sign-in">Sign In</span></p>
+                <p className="sign-in-question">Already have an account? <span onClick={() => {navigate('/login')}} className="sign-in">Sign In</span></p>
             </div>
         </div>
     )

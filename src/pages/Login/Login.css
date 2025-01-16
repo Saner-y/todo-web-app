@@ -29,7 +29,7 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 1400px; /* Adjust the width as needed */
-    height: 700px; /* Adjust the height as needed */
+    height: 800px; /* Adjust the height as needed */
     margin: 0 auto; /* Center the form horizontally */
     align-items: flex-start; /* Align items to the start */
 }
