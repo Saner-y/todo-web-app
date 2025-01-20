@@ -1,0 +1,37 @@
+.item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 20px;
+    cursor: pointer;
+    gap: 1em;
+    background-color: transparent;
+    border: none;
+}
+
+.active-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 20px;
+    cursor: pointer;
+    gap: 1em;
+    background-color: #fff;
+    border: none;
+    border-radius: 8px;
+}
+
+.sidenav-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.sidenav-title {
+    font-size: 1em;
+    font-weight: 500;
+    color: #fff;
+}
+
+.active-sidenav-title {
+    color: #ff6767;
+}

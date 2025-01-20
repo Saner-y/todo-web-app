@@ -1,0 +1,52 @@
+.main-navbar {
+    background-color: #F8F8F8;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0 16px;
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+}
+
+.main-navbar-logo {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    margin-left: 50px;
+}
+
+.icon-button-div {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    justify-self: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.datetime-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    gap: 0.5em;
+    margin-right: 100px;
+}
+
+.datetime-day-string {
+    font-size: 15px;
+    font-weight: 600;
+    color: #000000;
+    margin: 0;
+}
+
+.datetime-day{
+    font-size: 15px;
+    font-weight: 500;
+    color: #039be5;
+    margin: 0;
+}

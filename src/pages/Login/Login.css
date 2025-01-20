@@ -1,16 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
-:root {
+.login-bg {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Ensure the parent takes the full viewport height */
-    width: 100vw; /* Ensure the parent takes the full viewport width */
-    margin: 0; /* Remove default margin */
+    min-height: 100vh;
+    width: 100%;
+    margin: 0;
     background-image: url('src/assets/register-background.png');
     background-color: #FF6767;
     background-size: cover;
     background-position: center;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .title {

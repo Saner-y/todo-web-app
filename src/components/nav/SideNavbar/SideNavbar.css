@@ -1,0 +1,78 @@
+.sidenav-profile-picture {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border : 2px solid #fff;
+}
+
+.sidenav-user-details {
+    display: flex;
+    flex-direction: column;
+    font-size: 1em;
+    font-weight: 500;
+    color: #fff;
+    align-items: center;
+    margin-bottom: -125px;
+    width: 100%;
+    height: auto;
+    z-index: 1;
+}
+
+.sidenavbar {
+    background-color: #ff6767;
+    padding-top: 180px;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    align-items: center;
+    width: 100%;
+}
+
+.sidenav-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.sidenav-items {
+    display: flex;
+    flex-direction: column;
+    width: 98%;
+    height: 100%;
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidenav-item-list {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    width: 100%;
+}
+
+.sidenav-logout {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    gap: 1em;
+    background-color: transparent;
+    border: none;
+    width: 100%;
+}
+
+.sidenav-username{
+    margin: 10px 0;
+}
+
+.sidenav-email{
+    margin: 10px 0;
+}

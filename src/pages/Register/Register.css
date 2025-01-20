@@ -1,20 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-
-:root {
+.register-bg {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Ensure the parent takes the full viewport height */
-    width: 100vw; /* Ensure the parent takes the full viewport width */
-    margin: 0; /* Remove default margin */
+    min-height: 100vh;
+    width: 100%;
+    margin: 0;
     background-image: url('src/assets/register-background.png');
     background-color: #FF6767;
     background-size: cover;
     background-position: center;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .title {
-    font-size: 36px;
+    font-size: clamp(24px, 5vw, 36px);
     font-weight: 700;
     color: #212427;
     margin-bottom: 0.1em;
@@ -25,27 +25,29 @@
     background-color: #fff;
     display: flex;
     flex-direction: row;
-    padding: 2em;
+    padding: clamp(1em, 3vw, 2em);
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 1400px; /* Adjust the width as needed */
-    height: 800px; /* Adjust the height as needed */
-    margin: 0 auto; /* Center the form horizontally */
-    align-items: flex-start; /* Align items to the start */
+    width: 100%;
+    max-width: 1400px;
+    min-height: 600px;
+    height: auto;
+    margin: 0 auto;
+    align-items: flex-start;
+    gap: 2em;
 }
 
 .register-image {
     width: 30%;
-    height: 80%;
-    object-fit: fill;
-    object-position: center;
+    max-height: 600px;
+    object-fit: contain;
     border-radius: 10px;
-    align-self: flex-end; /* Align the image to the start */
+    align-self: center;
 }
 
 .register-form-input {
-    margin-left: auto; /* Push the form-input to start after the center */
-    width: 50%; /* Adjust the width as needed */
+    flex: 1;
+    max-width: 50%;
     display: flex;
     flex-direction: column;
     gap: 1em;
@@ -54,19 +56,17 @@
 .register-checkbox {
     display: flex;
     align-items: center;
-    gap: 1.5em;
+    gap: 1em;
     font-family: Montserrat, sans-serif;
+    font-size: clamp(14px, 2vw, 16px);
 }
 
 .register-checkbox input {
-    width: 18px;
-    height: 18px;
+    width: clamp(16px, 2vw, 18px);
+    height: clamp(16px, 2vw, 18px);
 }
 
-.register-checkbox input:hover {
-    cursor: pointer;
-}
-
+.register-checkbox input:hover,
 .register-checkbox:hover {
     cursor: pointer;
 }
@@ -82,7 +82,75 @@
 
 .sign-in-question {
     font-family: Montserrat, sans-serif;
-    font-size: 16px;
+    font-size: clamp(14px, 2vw, 16px);
     color: #212427;
     margin-top: 0;
+}
+
+/* Tablet için medya sorgusu */
+@media screen and (max-width: 1024px) {
+    .register-form {
+        max-width: 90%;
+    }
+
+    .register-form-input {
+        max-width: 60%;
+    }
+}
+
+/* Orta boyutlu tablet için */
+@media screen and (max-width: 768px) {
+    .register-form {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .register-image {
+        width: 50%;
+        margin: 0 auto;
+    }
+
+    .register-form-input {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+}
+
+/* Mobil için medya sorgusu */
+@media screen and (max-width: 480px) {
+    :root {
+        padding: 10px;
+    }
+
+    .register-form {
+        padding: 1em;
+    }
+
+    .register-image {
+        width: 70%;
+    }
+
+    .title {
+        text-align: center;
+    }
+
+    .register-checkbox {
+        font-size: 14px;
+    }
+
+    .sign-in-question {
+        font-size: 14px;
+        text-align: center;
+    }
+}
+
+/* Küçük mobil cihazlar için */
+@media screen and (max-width: 320px) {
+    .register-image {
+        width: 90%;
+    }
+
+    .register-form {
+        padding: 0.8em;
+    }
 }
