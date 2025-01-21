@@ -1,0 +1,202 @@
+.main-card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+    border: 1px solid #747474;
+    padding: 1rem;
+    width: 100%;
+    max-width: 1200px; /* Maksimum genişlik belirleyerek kartın fazla genişlemesini önler */
+}
+
+.main-card-header-body-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 100%;
+    align-items: start;
+    flex: 0.9;
+}
+
+.main-card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.main-card-header-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.main-card-header-edit {
+    cursor: pointer;
+    width: 2rem;
+}
+
+.main-card-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+}
+
+.main-card-body-text {
+    font-size: 1rem;
+    color: #747474;
+    flex: 1;
+}
+
+.main-card-body-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    border-radius: 25%;
+    background-color: #f1f1f1;
+}
+
+.main-card-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap; /* Dar ekranlarda elemanların aşağı kaymasını sağlar */
+    gap: 0.5rem;
+}
+
+.main-card-footer-status {
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex: 0.5;
+}
+
+.main-card-footer-status-text {
+    font-weight: bold;
+}
+
+.main-card-footer-priority-text {
+    font-weight: bold;
+}
+
+.main-card-footer-date {
+    color: #A1A3AB;
+    font-size: 0.9rem;
+}
+
+.status-circle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 3px solid;
+}
+
+.status-text {
+    font-weight: bold;
+}
+
+.status-not-started {
+    color: #f21e1e;
+    border-color: #f21e1e;
+}
+
+.status-in-progress {
+    color: #0225ff;
+}
+
+.status-completed {
+    color: #05a301;
+}
+
+.priority-text {
+    font-weight: bold;
+}
+
+.priority-low {
+    color: #05a301;
+}
+
+.priority-moderate {
+    color: #42ade2;
+}
+
+.priority-extreme {
+    color: #f21e1e;
+}
+
+/* Responsive Ayarlamalar */
+@media (max-width: 1200px) {
+    .main-card-header-title {
+        font-size: 1.4rem;
+    }
+
+    .main-card-body-text {
+        font-size: 0.95rem;
+    }
+
+    .main-card-footer-date {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-card {
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .main-card-header-title {
+        font-size: 1.2rem;
+    }
+
+    .main-card-body {
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .main-card-body-text {
+        font-size: 0.9rem;
+    }
+
+    .main-card-body-image {
+        width: 30%;
+    }
+
+    .main-card-footer {
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .main-card-footer-date {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-card-header-title {
+        font-size: 1rem;
+    }
+
+    .main-card-body-text {
+        font-size: 0.85rem;
+    }
+
+    .main-card-body-image {
+        width: 50%;
+    }
+
+    .main-card-footer-date {
+        font-size: 0.75rem;
+    }
+}

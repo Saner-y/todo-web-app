@@ -10,3 +10,8 @@
     transition: background-color 0.3s;
     border: none;
 }
+
+.icon-button{
+    height: 50%;
+    width: 50%;
+}
