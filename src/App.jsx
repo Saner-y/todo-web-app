@@ -4,6 +4,7 @@ import Login from './pages/Login/Login.jsx';
 import SideNavbar from "./components/nav/SideNavbar/SideNavbar.jsx";
 import MainNavbar from "./components/nav/MainNavbar/MainNavbar.jsx";
 import MainCard from "./components/card/MainCard/MainCard.jsx";
+import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 
 function App() {
     return (
@@ -12,8 +13,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/register"/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/login" element={<Login/>}/>
-                <Route path="/dashboard" element={<SideNavbar email="asd@asd.com" profilePicture="src/assets/pp.jpg"
-                                                              username="asdasd"/>}/>
+                <Route path="/dashboard" element={<Dashboard/>}/>
                 <Route path="/vital-task" element={<SideNavbar email="asd@asd.com" profilePicture="src/assets/pp.jpg"
                                                                username="asdasd"/>}/>
                 <Route path="/my-task" element={<SideNavbar email="asd@asd.com" profilePicture="src/assets/pp.jpg"
