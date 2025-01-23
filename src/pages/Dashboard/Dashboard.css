@@ -5,3 +5,8 @@
   justify-content: center;
   height: 100%;
 }
+
+.dashboard-page-completed-circle {
+  height: 100px;
+  width: 100px;
+}
