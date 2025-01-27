@@ -7,7 +7,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: transparent;
     border: 1px solid #747474;
-    padding: 0.75rem;
+    padding: 1rem;
     width: 100%;
     min-height: 100px;
     gap: 1rem;
@@ -127,46 +127,95 @@
 /* Responsive tasarım */
 @media (max-width: 768px) {
     .main-card {
-        padding: 0.5rem;
+        padding: 0.75rem;
         min-height: 90px;
+        gap: 0.75rem;
     }
 
     .main-card-header-body-wrapper {
-        width: calc(100% - 1rem);
+        width: 100%;
+        gap: 0.4rem;
+    }
+
+    .main-card-header-title {
+        font-size: 0.9rem;
+    }
+
+    .main-card-header-edit {
+        width: 1.25rem;
+        height: 1.25rem;
     }
 
     .main-card-body {
-        flex-direction: column;
         gap: 0.5rem;
     }
 
+    .main-card-body-text {
+        font-size: 0.8rem;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+    }
+
     .main-card-body-image {
-        width: 40px;
-        height: 40px;
+        width: 45px;
+        height: 45px;
     }
 
     .main-card-footer {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.4rem;
     }
 
     .main-card-footer-status {
-        width: 100%;
-        justify-content: space-between;
+        gap: 0.75rem;
     }
 }
 
 @media (max-width: 480px) {
     .main-card {
+        padding: 0.5rem;
         min-height: 80px;
+        gap: 0.5rem;
     }
 
     .main-card-header-title {
         font-size: 0.875rem;
+        max-width: calc(100% - 2rem);
+    }
+
+    .main-card-header-edit {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .main-card-body {
+        flex-direction: column-reverse;
+        gap: 0.4rem;
     }
 
     .main-card-body-text {
         font-size: 0.75rem;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+
+    .main-card-body-image {
+        width: 40px;
+        height: 40px;
+        align-self: center;
+    }
+
+    .main-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+    }
+
+    .main-card-footer-status {
+        width: 100%;
+        justify-content: space-between;
+        gap: 0.5rem;
     }
 
     .main-card-footer-status p {
@@ -175,5 +224,40 @@
 
     .main-card-footer-date {
         font-size: 0.7rem;
+        width: 100%;
+        text-align: right;
+    }
+
+    .status-circle {
+        width: 8px;
+        height: 8px;
+    }
+}
+
+@media (max-width: 320px) {
+    .main-card {
+        padding: 0.4rem;
+        min-height: 70px;
+    }
+
+    .main-card-header-title {
+        font-size: 0.8rem;
+    }
+
+    .main-card-body-text {
+        font-size: 0.7rem;
+    }
+
+    .main-card-body-image {
+        width: 35px;
+        height: 35px;
+    }
+
+    .main-card-footer-status p {
+        font-size: 0.7rem;
+    }
+
+    .main-card-footer-date {
+        font-size: 0.65rem;
     }
 }

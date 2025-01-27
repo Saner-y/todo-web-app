@@ -6,7 +6,14 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    height: 10%;
+    height: 70px;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-sizing: border-box;
 }
 
 .main-navbar-logo {
@@ -22,7 +29,9 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 6%;
+    width: auto;
+    gap: 1em;
+    min-width: 80px;
 }
 
 .datetime-div {
@@ -44,4 +53,50 @@
     font-weight: 500;
     color: #039be5;
     margin: 0;
+}
+
+/* Tablet için medya sorgusu */
+@media screen and (max-width: 768px) {
+    .main-navbar {
+        padding: 0 10px;
+        justify-content: space-between;
+        width: 100vw;
+    }
+    
+    .datetime-div {
+        display: none;
+    }
+}
+
+/* Mobil için medya sorgusu */
+@media screen and (max-width: 480px) {
+    .main-navbar {
+        padding: 0 5px;
+        width: 100vw;
+        left: 0;
+        right: 0;
+        margin: 0;
+    }
+    
+    .main-navbar-logo {
+        gap: 0.5em;
+    }
+    
+    .icon-button-div {
+        gap: 0.5em;
+    }
+    
+    .datetime-day-string,
+    .datetime-day {
+        font-size: 13px;
+    }
+}
+
+/* Navbar'ın altındaki içeriğin üst kenardan uzaklaştırılması için */
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
 }

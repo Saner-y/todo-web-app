@@ -25,10 +25,11 @@
     border-radius: 8px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     height: 100%;
     align-items: center;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .sidenav-wrapper {
@@ -75,4 +76,84 @@
 
 .sidenav-email{
     margin: 10px 0;
+}
+
+/* Tablet için medya sorgusu */
+@media screen and (max-width: 768px) {
+    .sidenav-profile-picture {
+        width: 80px;
+        height: 80px;
+    }
+
+    .sidenavbar {
+        padding-top: 120px;
+    }
+
+    .sidenav-user-details {
+        margin-bottom: -90px;
+    }
+
+    .sidenav-username,
+    .sidenav-email {
+        font-size: 0.9em;
+        margin: 5px 0;
+    }
+}
+
+/* Mobil için medya sorgusu */
+@media screen and (max-width: 480px) {
+    .sidenav-profile-picture {
+        width: 60px;
+        height: 60px;
+    }
+
+    .sidenavbar {
+        padding-top: 100px;
+        border-radius: 0;
+        width: 100vw;
+        height: calc(100vh - 70px);
+        margin-top: 70px;
+    }
+
+    .sidenav-user-details {
+        margin-bottom: -70px;
+    }
+
+    .sidenav-username,
+    .sidenav-email {
+        font-size: 0.8em;
+        margin: 3px 0;
+    }
+
+    .sidenav-item-list,
+    .sidenav-logout {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+
+    .sidenav-items {
+        width: 100%;
+        padding: 0 10px;
+    }
+}
+
+/* Çok küçük ekranlar için */
+@media screen and (max-width: 320px) {
+    .sidenav-profile-picture {
+        width: 50px;
+        height: 50px;
+    }
+
+    .sidenavbar {
+        padding-top: 80px;
+    }
+
+    .sidenav-user-details {
+        margin-bottom: -60px;
+    }
+
+    .sidenav-username,
+    .sidenav-email {
+        font-size: 0.7em;
+    }
 }
