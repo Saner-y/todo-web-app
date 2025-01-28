@@ -28,7 +28,7 @@ export default function Dashboard() {
   useEffect(() => {
     setIsLoading(true);
     async function getUserDetails() {
-      const userDocRef = doc(firestore, "users", "5si4dB8xh6fvk7HmO0KY3OQ5v4z1");
+      const userDocRef = doc(firestore, "users", localStorage.getItem("uid"));
       const userDocSnap = await getDoc(userDocRef);
       setUserDetails(userDocSnap.data().username);
       setIsLoading(false);
@@ -43,7 +43,7 @@ export default function Dashboard() {
         const tasksCollectionRef = collection(
           firestore,
           "users",
-          "5si4dB8xh6fvk7HmO0KY3OQ5v4z1",
+          localStorage.getItem("uid"),
           "tasks"
         );
         const q = query(tasksCollectionRef, where("status", "==", "Completed"));
@@ -74,17 +74,30 @@ export default function Dashboard() {
         const tasksCollectionRef = collection(
           firestore,
           "users",
-          "5si4dB8xh6fvk7HmO0KY3OQ5v4z1",
+          localStorage.getItem("uid"),
           "tasks"
         );
-        const today = new Date().toISOString().split("T")[0];
-        const q = query(tasksCollectionRef, where("date", "==", today));
+
+        // Bugünün tarihini Firestore formatına uygun şekilde oluşturma
+        const today = new Date();
+        const formattedDate = today.toLocaleString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          second: '2-digit',
+          timeZoneName: 'short',
+          hour12: true
+        });
+
+        const q = query(tasksCollectionRef, where("date", "==", formattedDate));
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
           console.log("Bugün için görev bulunamadı");
         } else {
-          console.log("Bugünün görevleri:", querySnapshot.size); // Debug için
+          console.log("Bugünün görevleri:", querySnapshot.size);
         }
 
         setTodaysTasks(querySnapshot);
@@ -159,9 +172,9 @@ export default function Dashboard() {
                         key={doc.id}
                         status={doc.data().status}
                         priority={doc.data().priority}
-                        cardBody={doc.data().body} // "description" yerine "body" kullanıyoruz
+                        cardBody={doc.data().body}
                         cardTitle={doc.data().title}
-                        createdAt={doc.data().createdOn} // "createdAt" yerine "createdOn" kullanıyoruz
+                        createdAt={doc.data().createdOn?.toDate().toLocaleDateString()}
                         image={doc.data().image}
                       />
                     ))}
@@ -266,7 +279,7 @@ export default function Dashboard() {
                           priority={doc.data().priority}
                           cardBody={doc.data().body}
                           cardTitle={doc.data().title}
-                          createdAt={doc.data().createdOn}
+                          createdAt={doc.data().createdOn?.toDate().toLocaleDateString()}
                           image={doc.data().image}
                         />
                       ))}
