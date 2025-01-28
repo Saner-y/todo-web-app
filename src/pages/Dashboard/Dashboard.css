@@ -8,6 +8,23 @@
   margin-top: 70px;
 }
 
+.dashboard-page-card-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #000000;
+  align-self: center;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  flex: 8;
+}
+
 .dashboard-page-body {
   display: flex;
   flex-direction: row;
@@ -65,7 +82,6 @@
   justify-content: start;
   align-items: center;
   flex: 1;
-  overflow: hidden;
   border-left: 1px solid #e0e0e0;
   border-right: 1px solid #e0e0e0;
   border-bottom: 1px solid #e0e0e0;
@@ -258,11 +274,32 @@
   }
 
   .dashboard-page-sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-    top: 0;
-    margin-top: 10px;
+    position: fixed;
+    left: -100%;
+    top: 70px;
+    width: 250px;
+    height: calc(100vh - 70px);
+    z-index: 1000;
+    transition: left 0.3s ease-in-out;
+  }
+
+  .dashboard-page-sidebar.open {
+    left: 0;
+  }
+
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  .sidebar-backdrop.open {
+    display: block;
   }
 
   .dashboard-page-content {
@@ -276,11 +313,14 @@
 
   .dashboard-page-content-cards {
     flex-direction: column;
+    height: auto;
   }
 
   .dashboard-page-content-todo-section {
     margin: 0.75em;
     padding: 0.75em;
+    max-height: none;
+    height: 100%;
   }
 
   .dashboard-page-status-completed-task-wrapper {
@@ -336,14 +376,22 @@
   }
 
   .dashboard-page-todo-section-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     gap: 0.5em;
+  }
+  
+  .dashboard-page-card-title {
+    font-size: 18px;
+    flex: 1;
   }
 
   .dashboard-header-add-new-task {
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-end;
+    gap: 0.5em;
+    flex: 1;
   }
 
   .dashboard-page-todo-cards {

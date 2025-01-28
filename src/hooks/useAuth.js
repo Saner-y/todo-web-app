@@ -73,8 +73,9 @@ export const useAuth = () => {
         try {
             checkEmail(email);
             checkPassword(password);
-            await signInWithEmailAndPassword(auth, email, password);
-            return 'Logged in successfully!';
+            const response = await signInWithEmailAndPassword(auth, email, password);
+            localStorage.setItem('uid', response.user.uid);
+            return response;
         } catch (error) {
             errorHandling(error);
         }
@@ -122,6 +123,7 @@ export const useAuth = () => {
     const logout = async () => {
         try {
             await signOut(auth);
+            localStorage.removeItem('uid');
             return 'Logged out successfully!';
         } catch (error) {
             errorHandling(error);

@@ -15,8 +15,10 @@ const firebaseConfig = {
     measurementId: "G-92WEC9MWKQ"
 };
 
-// Initialize Firebase
+// Firebase'i başlatma kontrolü - düzeltilmiş versiyon
 const app = initializeApp(firebaseConfig);
+
+// Tek bir app instance'ı kullanıyoruz
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const firestore = getFirestore(app);

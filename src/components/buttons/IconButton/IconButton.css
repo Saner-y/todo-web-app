@@ -2,8 +2,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 36px;
-    height: 36px;
+    width: clamp(32px, 5vw, 36px);
+    height: clamp(32px, 5vw, 36px);
     border-radius: 8px;
     background-color: #ff6767;
     cursor: pointer;
@@ -14,4 +14,28 @@
 .icon-button{
     height: 50%;
     width: 50%;
+}
+
+@media screen and (max-width: 768px) {
+    .icon-button-container {
+        border-radius: 6px;
+        width: 32px;
+        height: 32px;
+    }
+        .icon-button{
+        height: 50%;
+        width: 50%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .icon-button-container {
+        border-radius: 4px;
+        width: 28px;
+        height: 28px;
+    }
+    .icon-button{
+        height: 50%;
+        width: 50%;
+    }
 }

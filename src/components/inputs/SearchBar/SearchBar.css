@@ -22,3 +22,27 @@
 .search-input:focus {
     outline: none;
 }
+
+/* Tablet için medya sorgusu */
+@media screen and (max-width: 768px) {
+    .search-bar {
+        width: 70vw;
+    }
+    
+    .search-input {
+        font-size: 0.9rem;
+    }
+}
+
+/* Mobil cihazlar için medya sorgusu */
+@media screen and (max-width: 480px) {
+    .search-bar {
+        width: 90vw;
+        margin: 0 1rem;
+    }
+    
+    .search-input {
+        font-size: 0.85rem;
+        padding: 0.4rem;
+    }
+}
