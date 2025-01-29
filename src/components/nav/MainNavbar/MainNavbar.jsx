@@ -1,6 +1,5 @@
 import SearchBar from "../../inputs/SearchBar/SearchBar.jsx";
 import IconButton from "../../buttons/IconButton/IconButton.jsx";
-import { useState } from "react";
 import "./MainNavbar.css";
 import calendarIcon from "../../../assets/calendar-react.svg";
 import notificationIcon from "../../../assets/notification-react.svg";
@@ -8,8 +7,7 @@ import { getDocs } from "firebase/firestore";
 import { useSearch } from "../../../context/SearchContext.jsx";
 
 export default function MainNavbar({ headerLogo, toggleSidebar }) {
-  const { handleSearch } = useSearch();
-  const [searchValue, setSearchValue] = useState("");
+  const { setSearchTerm, setIsSearchActive } = useSearch();
   const dateObject = new Date();
   const day = dateObject.toLocaleDateString("en-US", { weekday: "long" });
   const date = dateObject.toLocaleDateString().replaceAll(".", "/");
@@ -36,10 +34,12 @@ export default function MainNavbar({ headerLogo, toggleSidebar }) {
       <div className="main-navbar-logo">
         <img src={headerLogo} alt="logo" />
       </div>
-      <input 
-        type="text"
-        placeholder="Görev ara..."
-        onChange={(e) => handleSearch(e.target.value)}
+      <SearchBar 
+        placeholder="Search your tasks..." 
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+          setIsSearchActive(e.target.value.length > 0);
+        }}
       />
       <div className="icon-button-div">
         <IconButton icon={notificationIcon} alt="notification" />

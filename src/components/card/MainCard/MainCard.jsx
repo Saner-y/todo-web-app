@@ -7,7 +7,7 @@ export default function MainCard({cardTitle, cardBody, status, priority, created
 
     return (
         <div className="main-card">
-            <div className={`status-circle ${statusClass}`}/>
+            <circle className={`status-circle ${statusClass}`}/>
             <div className="main-card-header-body-wrapper">
                 <div className="main-card-header">
                     <h1 className="main-card-header-title">{cardTitle}</h1>

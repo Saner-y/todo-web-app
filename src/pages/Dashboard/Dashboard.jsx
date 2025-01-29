@@ -5,6 +5,7 @@ import { useState, useEffect, useMemo } from "react";
 import "./Dashboard.css";
 import { toast, ToastContainer } from "react-toastify";
 import { useSearch } from "../../context/SearchContext.jsx";
+
 import {
   doc,
   getDoc,
@@ -38,7 +39,7 @@ export default function Dashboard() {
     return tasks.filter(
       (task) =>
         task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        task.description.toLowerCase().includes(searchTerm.toLowerCase())
+        task.body.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [tasks, searchTerm, isSearchActive]);
 
@@ -204,6 +205,34 @@ export default function Dashboard() {
     calculatePerStatus();
   }, []); // Bağımlılıkları ekleyebilirsiniz
 
+  useEffect(() => {
+    async function getAllTasks() {
+      try {
+        const tasksCollectionRef = collection(
+          firestore,
+          "users",
+          localStorage.getItem("uid"),
+          "tasks"
+        );
+        const querySnapshot = await getDocs(tasksCollectionRef);
+        const tasksList = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          // Timestamp'leri tarihe dönüştür
+          return {
+            id: doc.id,
+            ...data,
+            createdOn: data.createdOn?.toDate().toLocaleDateString() || ''
+          };
+        });
+        setTasks(tasksList);
+      } catch (error) {
+        console.error("Görevler yüklenirken hata oluştu:", error);
+        toast.error("Görevler yüklenirken hata oluştu");
+      }
+    }
+    getAllTasks();
+  }, []);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -222,15 +251,7 @@ export default function Dashboard() {
     );
   }
 
-  if (isSearchActive) {
-    return (
-      <div>
-        {filteredTasks.map((task) => (
-          <MainCard key={task.id} task={task} />
-        ))}
-      </div>
-    );
-  }
+  
 
   return (
     <div className="dashboard-page">
@@ -261,148 +282,145 @@ export default function Dashboard() {
                 Welcome back, {userDetails}
               </h1>
               <div className="dashboard-page-content-cards">
-                <div className="dashboard-page-content-todo-section">
-                  <div className="dashboard-page-todo-section-header">
-                    <div className="dashboard-page-status-card-header">
-                      <img src="src/assets/tasks-react.svg" alt="tasks" />
-                      <h3 className="dashboard-page-card-title">To-Do</h3>
-                    </div>
-                    <label className="dashboard-header-add-new-task">
-                      <img src="src/assets/add-react.svg" alt="add" />
-                      <button className="add-new-tasks-button">
-                        Add New Task
-                      </button>
-                    </label>
-                  </div>
-                  <div className="dashboard-page-todo-section-date">
-                    <p>{today.toLocaleDateString()}</p>
-                    <circle className="dashboard-page-date-divider-circle" />
-                    <p>Today</p>
-                  </div>
-                  <div className="dashboard-page-todo-cards">
-                    {todaysTasks?.docs?.map((doc) => (
-                      <MainCard
-                        key={doc.id}
-                        status={doc.data().status}
-                        priority={doc.data().priority}
-                        cardBody={doc.data().body}
-                        cardTitle={doc.data().title}
-                        createdAt={doc
-                          .data()
-                          .createdOn?.toDate()
-                          .toLocaleDateString()}
-                        image={doc.data().image}
-                      />
-                    ))}
-                    {/* <MainCard
-                  status="Not Started"
-                  priority="Moderate"
-                  cardBody="Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)....."
-                  cardTitle="Attend Nischal's Birthday Party"
-                  createdAt="20/06/2023"
-                  image="src/assets/maincard-test-react.jpg"
-                />
-                <MainCard
-                  status="Not Started"
-                  priority="Moderate"
-                  cardBody="Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)....."
-                  cardTitle="Attend Nischal's Birthday Party"
-                  createdAt="20/06/2023"
-                  image="src/assets/maincard-test-react.jpg"
-                />
-                <MainCard
-                  status="Not Started"
-                  priority="Moderate"
-                  cardBody="Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)....."
-                  cardTitle="Attend Nischal's Birthday Party"
-                  createdAt="20/06/2023"
-                  image="src/assets/maincard-test-react.jpg"
-                /> */}
-                  </div>
-                </div>
-                <div className="dashboard-page-status-completed-task-wrapper">
-                  <div className="dashboard-page-status-card">
-                    <div className="dashboard-page-status-card-header">
-                      <img
-                        src="src/assets/task-status-react.svg"
-                        alt="status"
-                      />
-                      <h3 className="dashboard-page-card-title">Task Status</h3>
-                    </div>
-                    <div className="dashboard-page-status-card-body">
-                      <div className="dashboard-page-status-card-body-item">
-                        <CircularProgress
-                          percentage={statusPercantage?.completed ?? 0}
-                          color="#05a301"
-                        />
-                        <h4 className="completed-task-status-title task-status-title">
-                          Completed
-                        </h4>
+                
+            {isSearchActive ? (<div>
+        {filteredTasks.map((task) => (
+          <MainCard key={task.id} cardTitle={task.title} cardBody={task.body} priority={task.priority} status={task.status} createdAt={task.createdOn} image={task.image}/>
+        ))}
+      </div>):(<><div className="dashboard-page-content-todo-section">
+                      <div className="dashboard-page-todo-section-header">
+                        <div className="dashboard-page-status-card-header">
+                          <img src="src/assets/tasks-react.svg" alt="tasks" />
+                          <h3 className="dashboard-page-card-title">To-Do</h3>
+                        </div>
+                        <label className="dashboard-header-add-new-task">
+                          <img src="src/assets/add-react.svg" alt="add" />
+                          <button className="add-new-tasks-button">
+                            Add New Task
+                          </button>
+                        </label>
                       </div>
-                      <div className="dashboard-page-status-card-body-item">
-                        <CircularProgress
-                          percentage={statusPercantage?.inProgress ?? 0}
-                          color="#ffb946"
-                        />
-                        <h4 className="in-progress-task-status-title task-status-title">
-                          In Progress
-                        </h4>
+                      <div className="dashboard-page-todo-section-date">
+                        <p>{today.toLocaleDateString()}</p>
+                        <circle className="dashboard-page-date-divider-circle" />
+                        <p>Today</p>
                       </div>
-                      <div className="dashboard-page-status-card-body-item">
-                        <CircularProgress
-                          percentage={statusPercantage?.notStarted ?? 0}
-                          color="#f21e1e"
-                        />
-                        <h4 className="not-started-task-status-title task-status-title">
-                          Not Started
-                        </h4>
+                      <div className="dashboard-page-todo-cards">
+                        {todaysTasks?.docs?.map((doc) => (
+                          <MainCard
+                            key={doc.id}
+                            status={doc.data().status}
+                            priority={doc.data().priority}
+                            cardBody={doc.data().body}
+                            cardTitle={doc.data().title}
+                            createdAt={doc
+                              .data()
+                              .createdOn?.toDate()
+                              .toLocaleDateString()}
+                            image={doc.data().image} />
+                        ))}
+                        {/* <MainCard
+  status="Not Started"
+  priority="Moderate"
+  cardBody="Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)....."
+  cardTitle="Attend Nischal's Birthday Party"
+  createdAt="20/06/2023"
+  image="src/assets/maincard-test-react.jpg"
+/>
+<MainCard
+  status="Not Started"
+  priority="Moderate"
+  cardBody="Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)....."
+  cardTitle="Attend Nischal's Birthday Party"
+  createdAt="20/06/2023"
+  image="src/assets/maincard-test-react.jpg"
+/>
+<MainCard
+  status="Not Started"
+  priority="Moderate"
+  cardBody="Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)....."
+  cardTitle="Attend Nischal's Birthday Party"
+  createdAt="20/06/2023"
+  image="src/assets/maincard-test-react.jpg"
+/> */}
                       </div>
-                    </div>
-                  </div>
-                  <div className="dashboard-page-completed-task-card">
-                    <div className="dashboard-page-completed-task-card-header">
-                      <img
-                        src="src/assets/completed-tasks-react.svg"
-                        alt="completed"
-                      />
-                      <h3 className="dashboard-page-card-title">
-                        Completed Task
-                      </h3>
-                    </div>
-                    <div className="dashboard-page-completed-task-card-body">
-                      {completedTasks?.docs?.map((doc) => (
-                        <MainCard
-                          key={doc.id}
-                          status={doc.data().status}
-                          priority={doc.data().priority}
-                          cardBody={doc.data().body}
-                          cardTitle={doc.data().title}
-                          createdAt={doc
-                            .data()
-                            .createdOn?.toDate()
-                            .toLocaleDateString()}
-                          image={doc.data().image}
-                        />
-                      ))}
-                      {/* <MainCard
-                    status="Not Started"
-                    priority="Moderate"
-                    cardBody="Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)....."
-                    cardTitle="Attend Nischal's Birthday Party"
-                    createdAt="20/06/2023"
-                    image="src/assets/maincard-test-react.jpg"
-                  />
-                  <MainCard
-                    status="Not Started"
-                    priority="Moderate"
-                    cardBody="Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)....."
-                    cardTitle="Attend Nischal's Birthday Party"
-                    createdAt="20/06/2023"
-                    image="src/assets/maincard-test-react.jpg"
-                  /> */}
-                    </div>
-                  </div>
-                </div>
+                    </div><div className="dashboard-page-status-completed-task-wrapper">
+                        <div className="dashboard-page-status-card">
+                          <div className="dashboard-page-status-card-header">
+                            <img
+                              src="src/assets/task-status-react.svg"
+                              alt="status" />
+                            <h3 className="dashboard-page-card-title">Task Status</h3>
+                          </div>
+                          <div className="dashboard-page-status-card-body">
+                            <div className="dashboard-page-status-card-body-item">
+                              <CircularProgress
+                                percentage={statusPercantage?.completed ?? 0}
+                                color="#05a301" />
+                              <h4 className="completed-task-status-title task-status-title">
+                                Completed
+                              </h4>
+                            </div>
+                            <div className="dashboard-page-status-card-body-item">
+                              <CircularProgress
+                                percentage={statusPercantage?.inProgress ?? 0}
+                                color="#ffb946" />
+                              <h4 className="in-progress-task-status-title task-status-title">
+                                In Progress
+                              </h4>
+                            </div>
+                            <div className="dashboard-page-status-card-body-item">
+                              <CircularProgress
+                                percentage={statusPercantage?.notStarted ?? 0}
+                                color="#f21e1e" />
+                              <h4 className="not-started-task-status-title task-status-title">
+                                Not Started
+                              </h4>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="dashboard-page-completed-task-card">
+                          <div className="dashboard-page-completed-task-card-header">
+                            <img
+                              src="src/assets/completed-tasks-react.svg"
+                              alt="completed" />
+                            <h3 className="dashboard-page-card-title">
+                              Completed Task
+                            </h3>
+                          </div>
+                          <div className="dashboard-page-completed-task-card-body">
+                            {completedTasks?.docs?.map((doc) => (
+                              <MainCard
+                                key={doc.id}
+                                status={doc.data().status}
+                                priority={doc.data().priority}
+                                cardBody={doc.data().body}
+                                cardTitle={doc.data().title}
+                                createdAt={doc
+                                  .data()
+                                  .createdOn?.toDate()
+                                  .toLocaleDateString()}
+                                image={doc.data().image} />
+                            ))}
+                            {/* <MainCard
+  status="Not Started"
+  priority="Moderate"
+  cardBody="Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)....."
+  cardTitle="Attend Nischal's Birthday Party"
+  createdAt="20/06/2023"
+  image="src/assets/maincard-test-react.jpg"
+/>
+<MainCard
+  status="Not Started"
+  priority="Moderate"
+  cardBody="Buy gifts on the way and pick up cake from the bakery. (6 PM | Fresh Elements)....."
+  cardTitle="Attend Nischal's Birthday Party"
+  createdAt="20/06/2023"
+  image="src/assets/maincard-test-react.jpg"
+/> */}
+                          </div>
+                        </div>
+                      </div></>)}
               </div>
             </div>
           </>

@@ -6,6 +6,7 @@ import MainNavbar from "./components/nav/MainNavbar/MainNavbar.jsx";
 import MainCard from "./components/card/MainCard/MainCard.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import { SearchProvider } from './context/SearchContext';
+import AddTask from './pages/AddTask/AddTask.jsx';
 
 function App() {
     return (
@@ -18,8 +19,7 @@ function App() {
                     <Route path="/dashboard" element={<Dashboard/>}/>
                     <Route path="/vital-task" element={<SideNavbar email="asd@asd.com" profilePicture="src/assets/pp.jpg"
                                                                    username="asdasd"/>}/>
-                    <Route path="/my-task" element={<SideNavbar email="asd@asd.com" profilePicture="src/assets/pp.jpg"
-                                                                username="asdasd"/>}/>
+                    <Route path="/my-task" element={<AddTask/>}/>
                     <Route path="/task-categories"
                            element={<SideNavbar email="asd@asd.com" profilePicture="src/assets/pp.jpg"
                                                 username="asdasd"/>}/>
