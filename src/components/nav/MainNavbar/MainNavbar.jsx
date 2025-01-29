@@ -3,7 +3,6 @@ import IconButton from "../../buttons/IconButton/IconButton.jsx";
 import "./MainNavbar.css";
 import calendarIcon from "../../../assets/calendar-react.svg";
 import notificationIcon from "../../../assets/notification-react.svg";
-import { getDocs } from "firebase/firestore";
 import { useSearch } from "../../../context/SearchContext.jsx";
 
 export default function MainNavbar({ headerLogo, toggleSidebar }) {
@@ -11,15 +10,6 @@ export default function MainNavbar({ headerLogo, toggleSidebar }) {
   const dateObject = new Date();
   const day = dateObject.toLocaleDateString("en-US", { weekday: "long" });
   const date = dateObject.toLocaleDateString().replaceAll(".", "/");
-  function searchTasks (value) {
-    const tasks = getDocs(query(tasksCollectionRef, where("title", "==", value)));
-    tasks += getDocs(query(tasksCollectionRef, where("body", "==", value)));
-    tasks += getDocs(query(tasksCollectionRef, where("createdOn", "==", value)));
-    tasks += getDocs(query(tasksCollectionRef, where("deadline", "==", value)));
-    tasks += getDocs(query(tasksCollectionRef, where("priority", "==", value)));
-    tasks += getDocs(query(tasksCollectionRef, where("status", "==", value)));
-    
-  }
 
   return (
     <nav className="main-navbar">
