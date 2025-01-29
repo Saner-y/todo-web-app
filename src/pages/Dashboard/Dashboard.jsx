@@ -1,13 +1,10 @@
 import MainNavbar from "../../components/nav/MainNavbar/MainNavbar.jsx";
 import SideNavbar from "../../components/nav/SideNavbar/SideNavbar.jsx";
 import MainCard from "../../components/card/MainCard/MainCard.jsx";
-import { useState, useEffect } from "react";
-import {
-  buildStyles,
-  CircularProgressbarWithChildren,
-} from "react-circular-progressbar";
+import { useState, useEffect, useMemo } from "react";
 import "./Dashboard.css";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import { useSearch } from "../../context/SearchContext.jsx";
 import {
   doc,
   getDoc,
@@ -15,8 +12,10 @@ import {
   query,
   collection,
   where,
+  Timestamp,
 } from "firebase/firestore";
 import { firestore } from "../../api/firebase.js";
+import CircularProgress from "../../components/bar/CircularProgress/CircularProgress.jsx";
 
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -24,6 +23,24 @@ export default function Dashboard() {
   const [todaysTasks, setTodaysTasks] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userDetails, setUserDetails] = useState(null);
+  const [statusPercantage, setStatusPercantage] = useState({
+    completed: 0,
+    inProgress: 0,
+    notStarted: 0,
+  });
+  const today = new Date();
+  const { searchTerm, isSearchActive } = useSearch();
+  const [tasks, setTasks] = useState([]);
+
+  const filteredTasks = useMemo(() => {
+    if (!isSearchActive) return tasks;
+
+    return tasks.filter(
+      (task) =>
+        task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        task.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [tasks, searchTerm, isSearchActive]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -55,6 +72,8 @@ export default function Dashboard() {
           console.log("Tamamlanmış görevler:", querySnapshot.size); // Debug için
         }
 
+        console.log(querySnapshot.docs);
+
         setCompletedTasks(querySnapshot);
         setIsLoading(false);
       } catch (error) {
@@ -78,20 +97,21 @@ export default function Dashboard() {
           "tasks"
         );
 
-        // Bugünün tarihini Firestore formatına uygun şekilde oluşturma
-        const today = new Date();
-        const formattedDate = today.toLocaleString('en-US', {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric',
-          hour: 'numeric',
-          minute: '2-digit',
-          second: '2-digit',
-          timeZoneName: 'short',
-          hour12: true
-        });
+        // Bugünün başlangıç ve bitiş zamanlarını oluştur
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
 
-        const q = query(tasksCollectionRef, where("date", "==", formattedDate));
+        // Timestamp'leri Firestore formatına çevir
+        const startOfDay = Timestamp.fromDate(today);
+        const endOfDay = Timestamp.fromDate(tomorrow);
+
+        const q = query(
+          tasksCollectionRef,
+          where("createdOn", ">=", startOfDay),
+          where("createdOn", "<", endOfDay)
+        );
+
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
@@ -112,14 +132,104 @@ export default function Dashboard() {
     getTodaysTasks();
   }, []);
 
+  useEffect(() => {
+    async function calculatePerStatus() {
+      try {
+        const tasksCollectionRef = collection(
+          firestore,
+          "users",
+          localStorage.getItem("uid"),
+          "tasks"
+        );
+
+        // Önce tüm görevleri çekelim
+        const allTasksSnapshot = await getDocs(tasksCollectionRef);
+        const totalTasks = allTasksSnapshot.size;
+
+        if (totalTasks === 0) {
+          setStatusPercantage({
+            completed: 0,
+            inProgress: 0,
+            notStarted: 0,
+          });
+          return;
+        }
+
+        // Her bir status için ayrı query
+        const completedSnapshot = await getDocs(
+          query(tasksCollectionRef, where("status", "==", "Completed"))
+        );
+        const inProgressSnapshot = await getDocs(
+          query(tasksCollectionRef, where("status", "==", "In Progress"))
+        );
+        const notStartedSnapshot = await getDocs(
+          query(tasksCollectionRef, where("status", "==", "Not Started"))
+        );
+
+        // Yüzdeleri hesapla
+        const completedPercantage = Math.round(
+          (completedSnapshot.size / totalTasks) * 100
+        );
+        const inProgressPercantage = Math.round(
+          (inProgressSnapshot.size / totalTasks) * 100
+        );
+        const notStartedPercantage = Math.round(
+          (notStartedSnapshot.size / totalTasks) * 100
+        );
+
+        console.log("Status percentages:", {
+          // Debug için
+          completed: completedPercantage,
+          inProgress: inProgressPercantage,
+          notStarted: notStartedPercantage,
+        });
+
+        setStatusPercantage({
+          completed: completedPercantage,
+          inProgress: inProgressPercantage,
+          notStarted: notStartedPercantage,
+        });
+      } catch (error) {
+        console.error("Calculate status percentage error:", error);
+        toast.error("Görev durumu yüzdeleri hesaplanırken hata oluştu");
+        // Hata durumunda varsayılan değerler
+        setStatusPercantage({
+          completed: 0,
+          inProgress: 0,
+          notStarted: 0,
+        });
+      }
+    }
+
+    calculatePerStatus();
+  }, []); // Bağımlılıkları ekleyebilirsiniz
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
   // Veri kontrolü ekleyin
-  const docs = todaysTasks?.docs || []; // null kontrolü için optional chaining
-  if (!todaysTasks || !todaysTasks.docs) {
-    return <div className="loading-container">Yükleniyor...</div>;
+  if (
+    !todaysTasks ||
+    !todaysTasks.docs ||
+    !completedTasks ||
+    !completedTasks.docs
+  ) {
+    return (
+      <div className="loading-container">
+        <circle className="loading-circle" />
+      </div>
+    );
+  }
+
+  if (isSearchActive) {
+    return (
+      <div>
+        {filteredTasks.map((task) => (
+          <MainCard key={task.id} task={task} />
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -153,7 +263,10 @@ export default function Dashboard() {
               <div className="dashboard-page-content-cards">
                 <div className="dashboard-page-content-todo-section">
                   <div className="dashboard-page-todo-section-header">
-                    <h3 className="dashboard-page-card-title">To-do</h3>
+                    <div className="dashboard-page-status-card-header">
+                      <img src="src/assets/tasks-react.svg" alt="tasks" />
+                      <h3 className="dashboard-page-card-title">To-Do</h3>
+                    </div>
                     <label className="dashboard-header-add-new-task">
                       <img src="src/assets/add-react.svg" alt="add" />
                       <button className="add-new-tasks-button">
@@ -162,7 +275,7 @@ export default function Dashboard() {
                     </label>
                   </div>
                   <div className="dashboard-page-todo-section-date">
-                    <p>20 June</p>
+                    <p>{today.toLocaleDateString()}</p>
                     <circle className="dashboard-page-date-divider-circle" />
                     <p>Today</p>
                   </div>
@@ -174,7 +287,10 @@ export default function Dashboard() {
                         priority={doc.data().priority}
                         cardBody={doc.data().body}
                         cardTitle={doc.data().title}
-                        createdAt={doc.data().createdOn?.toDate().toLocaleDateString()}
+                        createdAt={doc
+                          .data()
+                          .createdOn?.toDate()
+                          .toLocaleDateString()}
                         image={doc.data().image}
                       />
                     ))}
@@ -207,57 +323,36 @@ export default function Dashboard() {
                 <div className="dashboard-page-status-completed-task-wrapper">
                   <div className="dashboard-page-status-card">
                     <div className="dashboard-page-status-card-header">
-                      <img src="src/assets/add-react.svg" alt="add" />
+                      <img
+                        src="src/assets/task-status-react.svg"
+                        alt="status"
+                      />
                       <h3 className="dashboard-page-card-title">Task Status</h3>
                     </div>
                     <div className="dashboard-page-status-card-body">
                       <div className="dashboard-page-status-card-body-item">
-                        <div className="dashboard-page-completed-circle">
-                          <CircularProgressbarWithChildren
-                            value={20}
-                            styles={buildStyles({
-                              pathColor: "#FFB946",
-                              textColor: "#FFB946",
-                              trailColor: "#E0E0E0",
-                            })}
-                          >
-                            20
-                          </CircularProgressbarWithChildren>
-                        </div>
+                        <CircularProgress
+                          percentage={statusPercantage?.completed ?? 0}
+                          color="#05a301"
+                        />
                         <h4 className="completed-task-status-title task-status-title">
                           Completed
                         </h4>
                       </div>
                       <div className="dashboard-page-status-card-body-item">
-                        <div className="dashboard-page-in-progress-circle">
-                          <CircularProgressbarWithChildren
-                            value={20}
-                            styles={buildStyles({
-                              pathColor: "#FFB946",
-                              textColor: "#FFB946",
-                              trailColor: "#E0E0E0",
-                            })}
-                          >
-                            20
-                          </CircularProgressbarWithChildren>
-                        </div>
+                        <CircularProgress
+                          percentage={statusPercantage?.inProgress ?? 0}
+                          color="#ffb946"
+                        />
                         <h4 className="in-progress-task-status-title task-status-title">
                           In Progress
                         </h4>
                       </div>
                       <div className="dashboard-page-status-card-body-item">
-                        <div className="dashboard-page-not-started-circle">
-                          <CircularProgressbarWithChildren
-                            value={20}
-                            styles={buildStyles({
-                              pathColor: "#FFB946",
-                              textColor: "#FFB946",
-                              trailColor: "#E0E0E0",
-                            })}
-                          >
-                            20
-                          </CircularProgressbarWithChildren>
-                        </div>
+                        <CircularProgress
+                          percentage={statusPercantage?.notStarted ?? 0}
+                          color="#f21e1e"
+                        />
                         <h4 className="not-started-task-status-title task-status-title">
                           Not Started
                         </h4>
@@ -266,7 +361,10 @@ export default function Dashboard() {
                   </div>
                   <div className="dashboard-page-completed-task-card">
                     <div className="dashboard-page-completed-task-card-header">
-                      <img src="src/assets/add-react.svg" alt="add" />
+                      <img
+                        src="src/assets/completed-tasks-react.svg"
+                        alt="completed"
+                      />
                       <h3 className="dashboard-page-card-title">
                         Completed Task
                       </h3>
@@ -279,7 +377,10 @@ export default function Dashboard() {
                           priority={doc.data().priority}
                           cardBody={doc.data().body}
                           cardTitle={doc.data().title}
-                          createdAt={doc.data().createdOn?.toDate().toLocaleDateString()}
+                          createdAt={doc
+                            .data()
+                            .createdOn?.toDate()
+                            .toLocaleDateString()}
                           image={doc.data().image}
                         />
                       ))}
@@ -307,6 +408,17 @@ export default function Dashboard() {
           </>
         )}
       </div>
+      <ToastContainer
+        style={{
+          width: "300px",
+          height: "100px",
+          backgroundColor: "red",
+          color: "white",
+          fontSize: "16px",
+          fontWeight: "bold",
+          textAlign: "center",
+        }}
+      />
     </div>
   );
 }

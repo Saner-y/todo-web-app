@@ -4,12 +4,24 @@ import { useState } from "react";
 import "./MainNavbar.css";
 import calendarIcon from "../../../assets/calendar-react.svg";
 import notificationIcon from "../../../assets/notification-react.svg";
+import { getDocs } from "firebase/firestore";
+import { useSearch } from "../../../context/SearchContext.jsx";
 
 export default function MainNavbar({ headerLogo, toggleSidebar }) {
+  const { handleSearch } = useSearch();
   const [searchValue, setSearchValue] = useState("");
   const dateObject = new Date();
   const day = dateObject.toLocaleDateString("en-US", { weekday: "long" });
   const date = dateObject.toLocaleDateString().replaceAll(".", "/");
+  function searchTasks (value) {
+    const tasks = getDocs(query(tasksCollectionRef, where("title", "==", value)));
+    tasks += getDocs(query(tasksCollectionRef, where("body", "==", value)));
+    tasks += getDocs(query(tasksCollectionRef, where("createdOn", "==", value)));
+    tasks += getDocs(query(tasksCollectionRef, where("deadline", "==", value)));
+    tasks += getDocs(query(tasksCollectionRef, where("priority", "==", value)));
+    tasks += getDocs(query(tasksCollectionRef, where("status", "==", value)));
+    
+  }
 
   return (
     <nav className="main-navbar">
@@ -24,12 +36,10 @@ export default function MainNavbar({ headerLogo, toggleSidebar }) {
       <div className="main-navbar-logo">
         <img src={headerLogo} alt="logo" />
       </div>
-      <SearchBar
-        value={searchValue}
-        onChange={(e) => {
-          setSearchValue(e.target.value);
-        }}
-        placeholder="Search your task here..."
+      <input 
+        type="text"
+        placeholder="Görev ara..."
+        onChange={(e) => handleSearch(e.target.value)}
       />
       <div className="icon-button-div">
         <IconButton icon={notificationIcon} alt="notification" />

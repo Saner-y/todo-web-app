@@ -9,9 +9,9 @@
 }
 
 .dashboard-page-card-title {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 500;
-  color: #000000;
+  color: #ff6767;
   align-self: center;
 }
 
@@ -71,9 +71,27 @@
   justify-content: start;
   align-items: stretch;
   width: 100%;
-  height: 100%;
   box-sizing: border-box;
   border: 1px solid #e0e0e0;
+}
+
+.loading-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+
+@keyframes rotate {
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg);
+  }
 }
 
 .dashboard-page-content-todo-section {
@@ -382,10 +400,6 @@
     gap: 0.5em;
   }
   
-  .dashboard-page-card-title {
-    font-size: 18px;
-    flex: 1;
-  }
 
   .dashboard-header-add-new-task {
     width: 100%;
