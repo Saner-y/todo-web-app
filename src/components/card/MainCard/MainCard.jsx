@@ -15,7 +15,7 @@ export default function MainCard({cardTitle, cardBody, status, priority, created
                 </div>
                 <div className="main-card-body">
                     <p className="main-card-body-text">{cardBody}</p>
-                    <img src={image} alt={image.name} className="main-card-body-image"/>
+                    <img src={image} alt={"image"} className="main-card-body-image"/>
                 </div>
                 <div className="main-card-footer">
                     <div className="main-card-footer-status">

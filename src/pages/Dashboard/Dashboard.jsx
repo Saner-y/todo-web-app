@@ -17,6 +17,7 @@ import {
 } from "firebase/firestore";
 import { firestore } from "../../api/firebase.js";
 import CircularProgress from "../../components/bar/CircularProgress/CircularProgress.jsx";
+import AddTask from "../AddTask/AddTask.jsx";
 
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -32,6 +33,7 @@ export default function Dashboard() {
   const today = new Date();
   const { searchTerm, isSearchActive } = useSearch();
   const [tasks, setTasks] = useState([]);
+  const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
 
   const filteredTasks = useMemo(() => {
     if (!isSearchActive) return tasks;
@@ -295,7 +297,10 @@ export default function Dashboard() {
                         </div>
                         <label className="dashboard-header-add-new-task">
                           <img src="src/assets/add-react.svg" alt="add" />
-                          <button className="add-new-tasks-button">
+                          <button 
+                            className="add-new-tasks-button"
+                            onClick={() => setIsAddTaskDialogOpen(true)}
+                          >
                             Add New Task
                           </button>
                         </label>
@@ -437,6 +442,13 @@ export default function Dashboard() {
           textAlign: "center",
         }}
       />
+      {isAddTaskDialogOpen && (
+        <div className="dialog-overlay" onClick={() => setIsAddTaskDialogOpen(false)}>
+          <div className="dialog-content" onClick={e => e.stopPropagation()}>
+            <AddTask onClose={() => setIsAddTaskDialogOpen(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
