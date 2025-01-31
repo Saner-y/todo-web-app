@@ -4,12 +4,23 @@ import "./MainNavbar.css";
 import calendarIcon from "../../../assets/calendar-react.svg";
 import notificationIcon from "../../../assets/notification-react.svg";
 import { useSearch } from "../../../context/SearchContext.jsx";
+import { useAuth } from "../../../hooks/useAuth.js";
+import { firestore } from "../../../api/firebase.js";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function MainNavbar({ headerLogo, toggleSidebar }) {
   const { setSearchTerm, setIsSearchActive } = useSearch();
   const dateObject = new Date();
   const day = dateObject.toLocaleDateString("en-US", { weekday: "long" });
   const date = dateObject.toLocaleDateString().replaceAll(".", "/");
+  const { currentUser } = useAuth();
+
+  const getNotification = async () => {
+    const today = new Date().toISOString().split('T')[0];
+    const tasks = await getDocs(collection(firestore, `users/${currentUser.uid}/tasks`));
+    const dailyTasks = tasks.docs.filter(task => task.data().createdOn === today);
+    console.log(dailyTasks);
+  }
 
   return (
     <nav className="main-navbar">

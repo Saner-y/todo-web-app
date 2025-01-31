@@ -16,11 +16,31 @@ import {
     MissingFieldsError,
     MissingEmailAddress
 } from '../utils/ErrorHandling.js';
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from 'react';
 
 export const useAuth = () => {
+    const [currentUser, setCurrentUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setCurrentUser(user);
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
     const validatePasswords = (password, confirmPassword) => {
         if (password !== confirmPassword) {
-            throw new ValidationError();
+            throw new ValidationError('Şifreler eşleşmiyor');
+        }
+        
+        // Güçlü şifre kontrolü
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            throw new ValidationError('Şifre en az 8 karakter uzunluğunda olmalı ve en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter içermelidir');
         }
     };
 
@@ -53,7 +73,18 @@ export const useAuth = () => {
     };
 
     const saveUserData = async (uid, data) => {
-        await setDoc(doc(firestore, `users/${uid}`), data);
+        // Hassas verileri temizle
+        const sanitizedData = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            username: data.username,
+            email: data.email,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            isActive: true,
+            role: 'user'
+        };
+        await setDoc(doc(firestore, `users/${uid}`), sanitizedData);
     };
 
     const register = async ({firstName, lastName, username, email, password, confirmPassword, isChecked}) => {
@@ -74,22 +105,30 @@ export const useAuth = () => {
             checkEmail(email);
             checkPassword(password);
             const response = await signInWithEmailAndPassword(auth, email, password);
-            localStorage.setItem('uid', response.user.uid);
+            // localStorage.setItem('uid') satırını kaldırıyoruz
             return response;
         } catch (error) {
             errorHandling(error);
         }
     };
 
-
     const loginWithGoogle = async () => {
         try {
             const provider = new GoogleAuthProvider();
+            provider.setCustomParameters({
+                prompt: 'select_account'
+            });
             const result = await signInWithPopup(auth, provider);
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
             const user = result.user;
-            console.log('Logged in successfully!', user);
+            
+            await saveUserData(user.uid, {
+                firstName: user.displayName?.split(' ')[0] || '',
+                lastName: user.displayName?.split(' ')[1] || '',
+                email: user.email,
+                username: user.email?.split('@')[0] || ''
+            });
+            
+            // localStorage.setItem('uid') satırını kaldırıyoruz
             return user;
         } catch (error) {
             errorHandling(error);
@@ -130,5 +169,14 @@ export const useAuth = () => {
         }
     };
 
-    return {register, loginWithEmail, loginWithGoogle, loginWithTwitter, forgotPassword, logout};
+    return {
+        currentUser,
+        loading,
+        register, 
+        loginWithEmail, 
+        loginWithGoogle, 
+        loginWithTwitter, 
+        forgotPassword, 
+        logout
+    };
 };

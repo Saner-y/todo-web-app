@@ -13,32 +13,25 @@ export default function SideNavbar() {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { currentUser } = useAuth();
   
 
   useEffect(() => {
     setIsLoading(true);
     async function getUserDetails() {
-      if (!localStorage.getItem('uid')) {
-        console.log('Kullanıcı oturumu bulunamadı');
-        return;
-      }
-
-      try {
-        const userDocRef = doc(firestore, 'users', localStorage.getItem('uid'));
-        const userDocSnap = await getDoc(userDocRef);
-        
-        if (userDocSnap.exists()) {
-          setUserDetails(userDocSnap.data());
-          setIsLoading(false);
-        } else {
-          console.log('Kullanıcı bulunamadı');
-        }
-      } catch (error) {
-        console.error('Kullanıcı detayları alınırken hata oluştu:', error);
-      }
+    if (!currentUser?.uid) {
+      setIsLoading(false);
+      toast.error("User not found");
+      return;
     }
-    
-    getUserDetails();
+    const userDocRef = doc(firestore, 'users', currentUser.uid);
+    const userDocSnap = await getDoc(userDocRef);
+    if (userDocSnap.exists()) {
+      setUserDetails(userDocSnap.data());
+      setIsLoading(false);
+    }
+  }
+  getUserDetails();
   }, []);
 
   async function logoutFn() {

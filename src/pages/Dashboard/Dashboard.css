@@ -125,11 +125,32 @@
   justify-content: center;
   align-items: center;
   gap: 1em;
+  background-color: #FFC2C2;
+  border-radius: 10px;
+  padding: 1em;
+  box-sizing: border-box;
+  width: 50%;
+  transition: all 0.3s ease-in-out;
+  height: 5%;
 }
 
+.dashboard-header-add-new-task:hover {
+  transform: scale(1.05);
+  background-color: #eb9999;
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.dashboard-header-add-new-task:active {
+  transform: scale(1);
+  background-color: #eb9999;
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+
 .add-new-tasks-button {
+  color: #db4141;
   background-color: transparent;
-  color: #a1a3ab;
   font-size: 14px;
   font-weight: 500;
   border-radius: 5px;
@@ -440,6 +461,10 @@
   .dashboard-page-todo-section-date {
     font-size: 12px;
   }
+
+  .add-new-tasks-button {
+    display: none;
+  }
 }
 
 /* Çok küçük ekranlar için */
@@ -466,7 +491,7 @@
   }
 
   .add-new-tasks-button {
-    font-size: 12px;
+    display: none;
   }
 }
 

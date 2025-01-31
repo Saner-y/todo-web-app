@@ -2,7 +2,8 @@ import { useState } from "react";
 import MainButton from "../../components/buttons/MainButton/MainButton.jsx";
 import "./AddTask.css";
 import { setDoc, doc, Timestamp, collection } from "firebase/firestore";
-import { firestore } from "../../api/firebase.js";
+import { useAuth } from "../../hooks/useAuth.js";
+import { useTask } from "../../hooks/useTask.js";
 
 export default function AddTask({ onClose }) {
     const [priority, setPriority] = useState("low");
@@ -11,15 +12,11 @@ export default function AddTask({ onClose }) {
     const [description, setDescription] = useState("");
     const [image, setImage] = useState(null);
 
+    const { currentUser } = useAuth();
+    const { addTask } = useTask();
+
     const saveTask = async () => {
-        if (!title) {
-            console.log("Title is required");
-            return; // Prevent empty title
-        }
-        const tasksRef = collection(firestore, "users", localStorage.getItem("uid"), "tasks");
-        const taskDoc = doc(tasksRef);
-        console.log(taskDoc);
-        await setDoc(taskDoc, {
+        await addTask({
             title: title,
             createdOn: Timestamp.fromDate(new Date(date)),
             body: description,
@@ -27,8 +24,6 @@ export default function AddTask({ onClose }) {
             priority: priority,
             status: "Not Started",
         });
-        console.log("Task saved successfully");
-        onClose();
     }
   return (
     <div className="add-task-dialog">
