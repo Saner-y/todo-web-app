@@ -8,7 +8,7 @@ import {
     GoogleAuthProvider,
     TwitterAuthProvider
 } from "firebase/auth";
-import {doc, setDoc} from "firebase/firestore";
+import {doc, setDoc, getDoc} from "firebase/firestore";
 import {
     errorHandling,
     ValidationError,
@@ -105,7 +105,8 @@ export const useAuth = () => {
             checkEmail(email);
             checkPassword(password);
             const response = await signInWithEmailAndPassword(auth, email, password);
-            // localStorage.setItem('uid') satırını kaldırıyoruz
+            setCurrentUser(response.user);
+            console.log(response.user);
             return response;
         } catch (error) {
             errorHandling(error);
@@ -128,7 +129,7 @@ export const useAuth = () => {
                 username: user.email?.split('@')[0] || ''
             });
             
-            // localStorage.setItem('uid') satırını kaldırıyoruz
+            setCurrentUser(user);
             return user;
         } catch (error) {
             errorHandling(error);
@@ -142,6 +143,7 @@ export const useAuth = () => {
             const token = credential.accessToken;
             const secret = credential.secret;
             const user = result.user;
+            setCurrentUser(user);
             console.log('Logged in successfully!', user);
             return user;
         } catch (error) {
@@ -162,10 +164,30 @@ export const useAuth = () => {
     const logout = async () => {
         try {
             await signOut(auth);
-            localStorage.removeItem('uid');
+            setCurrentUser(null);
             return 'Logged out successfully!';
+
         } catch (error) {
             errorHandling(error);
+        }
+    };
+
+    const getUserDetails = async () => {
+        try {
+            if (!currentUser?.uid) {
+                throw new Error('Kullanıcı oturumu bulunamadı');
+            }
+            
+            const userDocRef = doc(firestore, 'users', currentUser.uid);
+            const userDocSnap = await getDoc(userDocRef);
+            
+            if (userDocSnap.exists()) {
+                return userDocSnap.data();
+            }
+            return null;
+        } catch (error) {
+            console.error('Kullanıcı bilgileri alınırken hata:', error);
+            return null;
         }
     };
 
@@ -177,6 +199,7 @@ export const useAuth = () => {
         loginWithGoogle, 
         loginWithTwitter, 
         forgotPassword, 
-        logout
+        logout,
+        getUserDetails
     };
 };

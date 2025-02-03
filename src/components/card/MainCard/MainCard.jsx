@@ -1,9 +1,69 @@
-import editButton from '../../../assets/edit-button-react.svg';
 import './MainCard.css';
+import { useState, useRef, useEffect } from 'react';
+import { useTask } from '../../../hooks/useTask';
 
-export default function MainCard({cardTitle, cardBody, status, priority, createdAt, image}) {
+export default function MainCard({
+    cardTitle, 
+    cardBody, 
+    status, 
+    priority, 
+    createdAt, 
+    image, 
+    taskId,
+    onTaskUpdate
+}) {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const menuRef = useRef(null);
+    const { updateTask, deleteTask } = useTask();
+
     const statusClass = `status-${status.toLowerCase().replace(' ', '-')}`;
     const priorityClass = `priority-${priority.toLowerCase().replace(' ', '-')}`;
+
+    const handleStatusChange = async (newStatus) => {
+        try {
+            await updateTask(taskId, { status: newStatus });
+            setIsMenuOpen(false);
+            onTaskUpdate();
+        } catch (error) {
+            console.error("Status güncellenirken hata:", error);
+        }
+    };
+
+    const handlePriorityChange = async (newPriority) => {
+        try {
+            await updateTask(taskId, { priority: newPriority });
+            setIsMenuOpen(false);
+            onTaskUpdate();
+        } catch (error) {
+            console.error("Priority güncellenirken hata:", error);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (window.confirm("Bu görevi silmek istediğinize emin misiniz?")) {
+
+            try {
+                await deleteTask(taskId);
+                onTaskUpdate();
+            } catch (error) {
+                console.error("Görev silinirken hata:", error);
+            }
+        }
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const statusOptions = ["Not Started", "In Progress", "Completed"];
+    const priorityOptions = ["Low", "Moderate", "Extreme"];
 
     return (
         <div className="main-card">
@@ -11,10 +71,60 @@ export default function MainCard({cardTitle, cardBody, status, priority, created
             <div className="main-card-header-body-wrapper">
                 <div className="main-card-header">
                     <h1 className="main-card-header-title">{cardTitle}</h1>
-                    <img src={editButton} alt="edit" className="main-card-header-edit"/>
+                    <div className="menu-container" ref={menuRef}>
+                        <button 
+                            className="main-card-header-edit-button"
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        >
+                            <div className="main-card-header-edit-button-circle-wrapper">
+                                <circle className="main-card-header-edit-button-circle"/>
+                                <circle className="main-card-header-edit-button-circle"/>
+                                <circle className="main-card-header-edit-button-circle"/>
+                            </div>
+                        </button>
+                        {isMenuOpen && (
+                            <div className="dropdown-menu">
+                                <div className="status-section">
+                                    <p className="menu-title">Change Status</p>
+                                    {statusOptions.map((option) => (
+                                        <button
+                                            key={option}
+                                            className={`status-option ${status === option ? 'active' : ''} ${status === option ? statusClass : ''}`}
+                                            onClick={() => handleStatusChange(option)}
+                                        >
+                                            {option}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="menu-divider"></div>
+                                <div className='priority-section'>
+                                    <p className='menu-title'>Change Priority</p>
+                                    {priorityOptions.map((option) => (
+                                        <button
+                                            key={option}
+                                            className={`priority-option ${priority === option ? 'active' : ''} ${priority === option ? priorityClass : ''}`}
+                                            onClick={() => handlePriorityChange(option)}
+                                        >
+                                            {option}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="menu-divider"></div>
+                                <div className="action-buttons">
+                                    <button className="menu-button update-button" onClick={() => console.log("Update clicked")}>
+                                        Edit
+                                    </button>
+                                    <button className="menu-button delete-button" onClick={handleDelete}>
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <div className="main-card-body">
                     <p className="main-card-body-text">{cardBody}</p>
+
                     <img src={image} alt={"image"} className="main-card-body-image"/>
                 </div>
                 <div className="main-card-footer">

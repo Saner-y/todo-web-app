@@ -1,12 +1,12 @@
 import SearchBar from "../../inputs/SearchBar/SearchBar.jsx";
 import IconButton from "../../buttons/IconButton/IconButton.jsx";
 import "./MainNavbar.css";
-import calendarIcon from "../../../assets/calendar-react.svg";
-import notificationIcon from "../../../assets/notification-react.svg";
+import {calendarIcon,notificationIcon} from "../../../assets/index.js";
 import { useSearch } from "../../../context/SearchContext.jsx";
 import { useAuth } from "../../../hooks/useAuth.js";
 import { firestore } from "../../../api/firebase.js";
 import { collection, getDocs } from "firebase/firestore";
+
 
 export default function MainNavbar({ headerLogo, toggleSidebar }) {
   const { setSearchTerm, setIsSearchActive } = useSearch();

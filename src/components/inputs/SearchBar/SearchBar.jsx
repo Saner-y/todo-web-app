@@ -1,6 +1,6 @@
 import './SearchBar.css'
 import IconButton from "../../buttons/IconButton/IconButton.jsx";
-import searchIcon from '../../../assets/search-react.svg'
+import {searchIcon} from '../../../assets/index.js'
 
 export default function SearchBar({placeholder, onChange, value, onClick}) {
     return (

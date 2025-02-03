@@ -5,6 +5,7 @@ import MainButton from "../../components/buttons/MainButton/MainButton.jsx";
 import {toast, ToastContainer, Zoom} from "react-toastify";
 import './Login.css'
 import {useNavigate} from "react-router-dom";
+import { loginIcons } from "../../assets/index.js";
 
 export default function Login() {
     const [isChecked, setIsChecked] = useState(false);
@@ -61,9 +62,9 @@ export default function Login() {
             <div className="form">
                 <div className="form-input">
                     <h2 className="title">Sign In</h2>
-                    <MainInput icon="src/assets/mail-react.svg" placeholder="Enter E-mail Address" type="email"
+                    <MainInput icon={loginIcons.mail} placeholder="Enter E-mail Address" type="email"
                                onChange={(e) => setEmail(e.target.value)} iconAlt="mail" text={email}/>
-                    <MainInput icon="src/assets/lock-react.svg" placeholder="Enter Password" type="password"
+                    <MainInput icon={loginIcons.lock} placeholder="Enter Password" type="password"
                                onChange={(e) => setPassword(e.target.value)} iconAlt="password" text={password}/>
                     <div className="footer-input">
                         <label className="checkbox"><input type="checkbox" onClick={() => setIsChecked(!isChecked)}
@@ -76,16 +77,16 @@ export default function Login() {
                     <div className="footer-div">
                         <div className="method-image-div">
                             <p>Login with</p>
-                            <img src="src/assets/google-react.svg" alt="google" onClick={googleLogin}
+                            <img src={loginIcons.google} alt="google" onClick={googleLogin}
                                  className="google"/>
-                            <img src="src/assets/x-react.svg" alt="x" onClick={twitterLogin} className="x"/>
+                            <img src={loginIcons.x} alt="x" onClick={twitterLogin} className="x"/>
                         </div>
                         <p>Don&#39;t have an account? <span onClick={() => {
                             navigate('/register')
                         }} className="create-account">Create One</span></p>
                     </div>
                 </div>
-                <img className="login-image" src="src/assets/login-react.png" alt="login-image"/>
+                <img className="login-image" src={loginIcons.image} alt="login-image"/>
                 <ToastContainer
                     position="top-right"
                     autoClose={3000}

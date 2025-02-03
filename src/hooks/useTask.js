@@ -154,6 +154,21 @@ export const useTask = () => {
         }
     }, [getTasksRef]);
 
+    const getAllTasks = useCallback(async () => {
+        setLoading(true);
+        try {
+            const tasksRef = getTasksRef();
+            const snapshot = await getDocs(tasksRef);
+            return snapshot;
+        } catch (err) {
+            setError(err.message);
+            toast.error('Görevler yüklenirken hata oluştu');
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    }, [getTasksRef]);
+
     return {
         loading,
         error,
@@ -162,6 +177,7 @@ export const useTask = () => {
         calculateTaskStats,
         addTask,
         updateTask,
-        deleteTask
+        deleteTask,
+        getAllTasks
     };
 }; 

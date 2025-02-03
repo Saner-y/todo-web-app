@@ -6,6 +6,7 @@ import "./SideNavbar.css";
 import { auth, firestore } from "../../../api/firebase.js";
 import { doc, getDoc } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
+import { sidenavIcons } from '../../../assets/index.js';
 
 export default function SideNavbar() {
   const { logout } = useAuth();
@@ -13,25 +14,31 @@ export default function SideNavbar() {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { currentUser } = useAuth();
-  
 
   useEffect(() => {
-    setIsLoading(true);
-    async function getUserDetails() {
-    if (!currentUser?.uid) {
-      setIsLoading(false);
-      toast.error("User not found");
-      return;
-    }
-    const userDocRef = doc(firestore, 'users', currentUser.uid);
-    const userDocSnap = await getDoc(userDocRef);
-    if (userDocSnap.exists()) {
-      setUserDetails(userDocSnap.data());
-      setIsLoading(false);
-    }
-  }
-  getUserDetails();
+    const fetchUserDetails = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          setIsLoading(false);
+          return;
+        }
+
+        const userDocRef = doc(firestore, 'users', user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        if (userDocSnap.exists()) {
+          setUserDetails(userDocSnap.data());
+        }
+      } catch (error) {
+        console.error('Kullanıcı bilgileri alınamadı:', error);
+        toast.error('Kullanıcı bilgileri yüklenirken hata oluştu');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserDetails();
   }, []);
 
   async function logoutFn() {
@@ -50,55 +57,61 @@ export default function SideNavbar() {
       id: "dashboard",
       icon:
         location.pathname === "/dashboard"
-          ? "src/assets/dashboard-active-react.svg"
-          : "src/assets/dashboard-react.svg",
+          ? sidenavIcons.dashboardActive
+          : sidenavIcons.dashboard,
       title: "Dashboard",
       isActive: location.pathname === "/dashboard",
+
     },
     {
       id: "vital-task",
       icon:
         location.pathname === "/vital-task"
-          ? "src/assets/exclamation-active-react.svg"
-          : "src/assets/exclamation-react.svg",
+          ? sidenavIcons.vitalActive
+          : sidenavIcons.vital,
       title: "Vital Task",
       isActive: location.pathname === "/vital-task",
+
     },
     {
       id: "my-task",
       icon:
         location.pathname === "/my-task"
-          ? "src/assets/checklist-active-react.svg"
-          : "src/assets/checklist-react.svg",
+          ? sidenavIcons.myTaskActive
+          : sidenavIcons.myTask,
       title: "My Task",
       isActive: location.pathname === "/my-task",
+
     },
     {
       id: "task-categories",
       icon:
         location.pathname === "/task-categories"
-          ? "src/assets/list-active-react.svg"
-          : "src/assets/list-react.svg",
+          ? sidenavIcons.taskCategoriesActive
+          : sidenavIcons.taskCategories,
       title: "Task Categories",
       isActive: location.pathname === "/task-categories",
+
     },
     {
       id: "settings",
       icon:
         location.pathname === "/settings"
-          ? "src/assets/settings-active-react.svg"
-          : "src/assets/settings-react.svg",
+          ? sidenavIcons.settingsActive
+          : sidenavIcons.settings,
       title: "Settings",
       isActive: location.pathname === "/settings",
+
     },
     {
       id: "help",
       icon:
         location.pathname === "/help"
-          ? "src/assets/help-active-react.svg"
-          : "src/assets/help-react.svg",
+          ? sidenavIcons.helpActive
+          : sidenavIcons.help,
       title: "Help",
       isActive: location.pathname === "/help",
+
     },
   ];
 
@@ -109,9 +122,10 @@ export default function SideNavbar() {
         {isLoading ? <><circle className="loading-circle"/><p className="sidenav-username">Loading...</p></> : (
         <>
         <img
-          src={userDetails?.profilePicture ?? "src/assets/pp.jpg"}
+          src={userDetails?.profilePicture ?? sidenavIcons.profile}
           alt={userDetails?.profilePicture ?? "profile picture"}
           className="sidenav-profile-picture"
+
         />
         <p className="sidenav-username">{userDetails?.username}</p>
         <p className="sidenav-email">{userDetails?.email}</p>
@@ -135,10 +149,11 @@ export default function SideNavbar() {
           </div>
           <div className="sidenav-logout">
             <SideNavbarItem
-              icon="src/assets/logout-react.svg"
+              icon={sidenavIcons.logout}
               isActive={false}
               title="Logout"
               onClick={logoutFn}
+
             />
           </div>
         </div>

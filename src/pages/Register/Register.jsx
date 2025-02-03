@@ -5,10 +5,7 @@ import MainButton from "../../components/buttons/MainButton/MainButton.jsx";
 import {useAuth} from "../../hooks/useAuth.js";
 import {ToastContainer, toast, Zoom} from 'react-toastify';
 import {useNavigate} from "react-router-dom";
-import bgIcon from "../../assets/register-image.png";
-import userIcon from "../../assets/user-react.svg";
-import mailIcon from "../../assets/mail-react.svg";
-import lockIcon from "../../assets/lock-react.svg";
+import { registerIcons } from "../../assets/index.js";
 
 
 export default function Register() {
@@ -22,13 +19,15 @@ export default function Register() {
     });
 
     const inputs = [
-        {id: 'firstName', placeholder: 'Enter First Name', icon: userIcon, type: 'text'},
-        {id: 'lastName', placeholder: 'Enter Last Name', icon: userIcon, type: 'text'},
-        {id: 'username', placeholder: 'Enter Username', icon: userIcon, type: 'text'},
-        {id: 'email', placeholder: 'Enter E-mail Address', icon: mailIcon, type: 'email'},
-        {id: 'password', placeholder: 'Enter Password', icon: lockIcon, type: 'password'},
-        {id: 'confirmPassword', placeholder: 'Confirm Your Password', icon: lockIcon, type: 'password'},
+        {id: 'firstName', placeholder: 'Enter First Name', icon: registerIcons.user, type: 'text'},
+        {id: 'lastName', placeholder: 'Enter Last Name', icon: registerIcons.user, type: 'text'},
+        {id: 'username', placeholder: 'Enter Username', icon: registerIcons.user, type: 'text'},
+        {id: 'email', placeholder: 'Enter E-mail Address', icon: registerIcons.mail, type: 'email'},
+
+        {id: 'password', placeholder: 'Enter Password', icon: registerIcons.lock, type: 'password'},
+        {id: 'confirmPassword', placeholder: 'Confirm Your Password', icon: registerIcons.lock, type: 'password'},
     ];
+
 
     function handleInputChange(e, id) {
         setFormData((prev) => ({...prev, [id]: e.target.value}));
@@ -59,7 +58,7 @@ export default function Register() {
     return (
         <div className="register-bg">
             <div className="register-form">
-                <img className="register-image" src={bgIcon} alt="register-image"/>
+                <img className="register-image" src={registerIcons.image} alt="register-image"/>
                 <div className="register-form-input">
                     <h2 className="title">Sign Up</h2>
                     {inputs.map(({id, placeholder, icon, type}) => (
