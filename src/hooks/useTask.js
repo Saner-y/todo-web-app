@@ -53,10 +53,11 @@ export const useTask = () => {
 
       const q = query(
         tasksRef,
-        where("createdOn", ">=", Timestamp.fromDate(today)),
-        where("createdOn", "<", Timestamp.fromDate(tomorrow))
+        where("assignedOn", ">=", Timestamp.fromDate(today)),
+        where("assignedOn", "<", Timestamp.fromDate(tomorrow))
       );
       return await getDocs(q);
+
     } catch (err) {
       setError(err.message);
       toast.error("Günlük görevler yüklenirken hata oluştu");
@@ -108,7 +109,6 @@ export const useTask = () => {
         const newTask = {
           ...taskData,
           createdOn: Timestamp.now(),
-          updatedOn: Timestamp.now(),
         };
         const docRef = await addDoc(tasksRef, newTask);
         toast.success("Görev başarıyla eklendi");

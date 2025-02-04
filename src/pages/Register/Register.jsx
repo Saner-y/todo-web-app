@@ -41,12 +41,17 @@ export default function Register() {
     async function onSubmit() {
         setLoading(true);
         try {
+            // Debug için kontrol
+            console.log('Form Data:', formData);
+            console.log('Password Match:', formData.password === formData.confirmPassword);
+
             if (!formData.firstName || !formData.lastName || !formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
                 toast.error('All fields are required!');
                 return;
             }
             const resp = await register({...formData, isChecked});
             toast.success(resp);
+            navigate('/login');
         } catch (e) {
             toast.error(e.message);
         } finally {

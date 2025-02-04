@@ -19,7 +19,7 @@ export default function MainNavbar({ headerLogo, toggleSidebar }) {
   const getNotification = async () => {
     const today = new Date().toISOString().split('T')[0];
     const tasks = await getDocs(collection(firestore, `users/${currentUser.uid}/tasks`));
-    const dailyTasks = tasks.docs.filter(task => task.data().createdOn === today);
+    const dailyTasks = tasks.docs.filter(task => task.data().assignedOn === today);
     console.log(dailyTasks);
   }
 

@@ -8,7 +8,7 @@ export default function MainCard({
   cardBody,
   status,
   priority,
-  createdAt,
+  assignedOn,
   image,
   taskId,
   onTaskUpdate,
@@ -154,7 +154,7 @@ export default function MainCard({
               </span>
             </p>
           </div>
-          <p className="main-card-footer-date">Assigned on: {createdAt}</p>
+          <p className="main-card-footer-date">Assigned on: {assignedOn}</p>
         </div>
       </div>
       {isEditDialogOpen && (
@@ -167,8 +167,8 @@ export default function MainCard({
               onClose={() => setIsEditDialogOpen(false)}
               initialData={{
                 title: cardTitle,
-                date: `${createdAt.split(".")[2]}-${createdAt.split(".")[1]}-${
-                  createdAt.split(".")[0]
+                date: `${assignedOn.split(".")[2]}-${assignedOn.split(".")[1]}-${
+                  assignedOn.split(".")[0]
                 }`,
                 description: cardBody,
                 status: status,

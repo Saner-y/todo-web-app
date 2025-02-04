@@ -33,6 +33,11 @@ export const useAuth = () => {
     }, []);
 
     const validatePasswords = (password, confirmPassword) => {
+        // Debug için kontrol edelim
+        console.log('Password:', password);
+        console.log('Confirm Password:', confirmPassword);
+        console.log('Are passwords equal?:', password === confirmPassword);
+
         if (password !== confirmPassword) {
             throw new ValidationError('Şifreler eşleşmiyor');
         }
@@ -42,6 +47,7 @@ export const useAuth = () => {
         if (!passwordRegex.test(password)) {
             throw new ValidationError('Şifre en az 8 karakter uzunluğunda olmalı ve en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter içermelidir');
         }
+        
     };
 
     const checkTermsAgreement = (isChecked) => {

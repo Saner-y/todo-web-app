@@ -54,10 +54,11 @@ const SearchResults = ({ tasks, onTaskUpdate }) => {
           cardBody={task.body}
           priority={task.priority}
           status={task.status}
-          createdAt={task.createdOn?.toDate().toLocaleDateString()}
+          assignedOn={task.assignedOn?.toDate().toLocaleDateString()}
           image={task.image}
           onTaskUpdate={onTaskUpdate}
         />
+
       ))}
     </div>
   );
@@ -91,10 +92,11 @@ const TodoSection = ({ todaysTasks, onAddTask, onTaskUpdate }) => (
           priority={doc.data().priority}
           cardBody={doc.data().body}
           cardTitle={doc.data().title}
-          createdAt={doc.data().createdOn?.toDate().toLocaleDateString()}
+          assignedOn={doc.data().assignedOn?.toDate().toLocaleDateString()}
           image={doc.data().image}
           onTaskUpdate={onTaskUpdate}
         />
+
       ))}
     </div>
   </div>
@@ -115,10 +117,11 @@ const CompletedTasksSection = ({ completedTasks, onTaskUpdate }) => (
           priority={doc.data().priority}
           cardBody={doc.data().body}
           cardTitle={doc.data().title}
-          createdAt={doc.data().createdOn?.toDate().toLocaleDateString()}
+          assignedOn={doc.data().assignedOn?.toDate().toLocaleDateString()}
           image={doc.data().image}
           onTaskUpdate={onTaskUpdate}
         />
+
       ))}
     </div>
   </div>
@@ -153,9 +156,10 @@ export default function Dashboard() {
       return {
         id: task.id,
         ...data,
-        createdOn: data.createdOn, // Timestamp objesi olarak bırak
+        assignedOn: data.assignedOn, // Timestamp objesi olarak bırak
       };
     });
+
 
     return allTasks.filter(
       (task) =>
@@ -280,7 +284,7 @@ export default function Dashboard() {
               className="dialog-content"
               onClick={(e) => e.stopPropagation()}
             >
-              <AddTask onClose={() => setState((prev) => ({ ...prev, isAddTaskDialogOpen: false }))} />
+              <AddTask onClose={(success) => handleCloseDialog(success)} />
             </div>
           </div>
         )}

@@ -105,21 +105,22 @@ export function errorHandling(error) {
         'auth/missing-recaptcha-version': 'The reCAPTCHA version is missing.',
         'auth/invalid-recaptcha-version': 'The reCAPTCHA version is invalid.',
         'auth/invalid-req-type': 'The request type is invalid.',
-        'validation-error': 'Passwords do not match!',
+        'validation-error': error.message || 'Validation error occurred!',
         'terms-agreement-error': 'You must agree to the terms and conditions!',
         'missing-fields-error': 'All fields are required!',
         'missing-email-address': 'Email address is required!',
     };
 
-    const message = errorMessages[error.code] || 'An unknown error occurred.';
+    const message = errorMessages[error.code] || error.message || 'An unknown error occurred.';
     throw new Error(message);
 }
 
 export class ValidationError extends Error {
-    constructor() {
-        super();
+    constructor(message) {
+        super(message);
         this.name = 'ValidationError';
         this.code = 'validation-error';
+        this.message = message;
     }
 }
 

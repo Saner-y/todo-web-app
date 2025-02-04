@@ -110,7 +110,7 @@ export default function AddTask({ onClose, initialData, onTaskUpdate }) {
         status: status,
         image: imageUrl,
         priority: priority,
-        createdOn: new Date(date),
+        assignedOn: new Date(date),
       });
 
       toast.success("Görev başarıyla güncellendi");
@@ -138,13 +138,12 @@ export default function AddTask({ onClose, initialData, onTaskUpdate }) {
 
       await addTask({
         title: title,
-        createdOn: new Date(date),
+        assignedOn: new Date(date),
         body: description,
         image: imageUrl,
         priority: priority,
         status: "Not Started",
       });
-
       toast.success("Görev başarıyla eklendi");
       onClose(true);
     } catch (error) {
