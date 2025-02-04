@@ -1,4 +1,4 @@
-# My First React Project
+# React To-Do Project
 
 This is my first react project. I tried to develop a to-do app and I'm still improving the app and myself. I'll keep adding new features and UI improvements.
 
