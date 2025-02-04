@@ -62,14 +62,26 @@
   cursor: pointer;
   padding: 10px;
 }
+@media screen and (max-width: 1024px) {
+  .add-new-tasks-button {
+    display: none;
+  }
+}
+
 
 @media screen and (max-width: 768px) {
   .menu-toggle-button {
     display: block;
   }
+
+  .add-new-tasks-button {
+    font-size: 12px;
+    display: block;
+  }
 }
 
 /* Tablet için medya sorgusu */
+
 @media screen and (max-width: 768px) {
     .main-navbar {
         padding: 0 10px;
@@ -83,6 +95,7 @@
 
     .main-navbar-logo {
         gap: 0.5em;
+
         height: 90px;
         width: 90px;
 
@@ -91,6 +104,14 @@
             width: 100%;
             object-fit: contain;
         }
+    }
+
+    .menu-toggle-button {
+        width: 40px;
+        height: 40px;
+
+        img {
+            width: 100%;
     }
 }
 
@@ -114,6 +135,7 @@
         height: 100%;
         object-fit: contain;
     }
+    display: none;
     }
     
     .icon-button-div {
@@ -124,13 +146,29 @@
     .datetime-day {
         font-size: 13px;
     }
+
+    .menu-toggle-button {
+        padding: 0;
+        width: 40px;
+        height: 40px;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
 }
 
+
 /* Navbar'ın altındaki içeriğin üst kenardan uzaklaştırılması için */
+
+
 body {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
     overflow-x: hidden;
+}
 }

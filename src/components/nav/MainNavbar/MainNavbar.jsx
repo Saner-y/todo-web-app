@@ -6,6 +6,7 @@ import { useSearch } from "../../../context/SearchContext.jsx";
 import { useAuth } from "../../../hooks/useAuth.js";
 import { firestore } from "../../../api/firebase.js";
 import { collection, getDocs } from "firebase/firestore";
+import { menuIcon } from "../../../assets/index.js";
 
 
 export default function MainNavbar({ headerLogo, toggleSidebar }) {
@@ -30,7 +31,7 @@ export default function MainNavbar({ headerLogo, toggleSidebar }) {
         onClick={toggleSidebar}
       >
         {/* Menü ikonu */}
-        <img src="src/assets/add-react.svg" alt="menu" />
+        <img src={menuIcon} alt="menu" />
       </button>
       <div className="main-navbar-logo">
         <img src={headerLogo} alt="logo" />

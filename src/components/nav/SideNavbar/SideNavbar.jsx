@@ -4,9 +4,9 @@ import { toast, ToastContainer } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./SideNavbar.css";
 import { auth, firestore } from "../../../api/firebase.js";
-import { doc, getDoc } from 'firebase/firestore';
-import { useState, useEffect } from 'react';
-import { sidenavIcons } from '../../../assets/index.js';
+import { doc, getDoc } from "firebase/firestore";
+import { useState, useEffect } from "react";
+import { sidenavIcons } from "../../../assets/index.js";
 
 export default function SideNavbar() {
   const { logout } = useAuth();
@@ -24,15 +24,15 @@ export default function SideNavbar() {
           return;
         }
 
-        const userDocRef = doc(firestore, 'users', user.uid);
+        const userDocRef = doc(firestore, "users", user.uid);
         const userDocSnap = await getDoc(userDocRef);
-        
+
         if (userDocSnap.exists()) {
           setUserDetails(userDocSnap.data());
         }
       } catch (error) {
-        console.error('Kullanıcı bilgileri alınamadı:', error);
-        toast.error('Kullanıcı bilgileri yüklenirken hata oluştu');
+        console.error("Kullanıcı bilgileri alınamadı:", error);
+        toast.error("Kullanıcı bilgileri yüklenirken hata oluştu");
       } finally {
         setIsLoading(false);
       }
@@ -61,7 +61,6 @@ export default function SideNavbar() {
           : sidenavIcons.dashboard,
       title: "Dashboard",
       isActive: location.pathname === "/dashboard",
-
     },
     {
       id: "vital-task",
@@ -71,7 +70,6 @@ export default function SideNavbar() {
           : sidenavIcons.vital,
       title: "Vital Task",
       isActive: location.pathname === "/vital-task",
-
     },
     {
       id: "my-task",
@@ -81,7 +79,6 @@ export default function SideNavbar() {
           : sidenavIcons.myTask,
       title: "My Task",
       isActive: location.pathname === "/my-task",
-
     },
     {
       id: "task-categories",
@@ -91,7 +88,6 @@ export default function SideNavbar() {
           : sidenavIcons.taskCategories,
       title: "Task Categories",
       isActive: location.pathname === "/task-categories",
-
     },
     {
       id: "settings",
@@ -101,7 +97,6 @@ export default function SideNavbar() {
           : sidenavIcons.settings,
       title: "Settings",
       isActive: location.pathname === "/settings",
-
     },
     {
       id: "help",
@@ -111,25 +106,27 @@ export default function SideNavbar() {
           : sidenavIcons.help,
       title: "Help",
       isActive: location.pathname === "/help",
-
     },
   ];
 
   return (
     <div className="sidenav-wrapper">
       <div className="sidenav-user-details">
-        
-        {isLoading ? <><circle className="loading-circle"/><p className="sidenav-username">Loading...</p></> : (
-        <>
-        <img
-          src={userDetails?.profilePicture ?? sidenavIcons.profile}
-          alt={userDetails?.profilePicture ?? "profile picture"}
-          className="sidenav-profile-picture"
-
-        />
-        <p className="sidenav-username">{userDetails?.username}</p>
-        <p className="sidenav-email">{userDetails?.email}</p>
-        </>
+        {isLoading ? (
+          <>
+            <circle className="loading-circle" />
+            <p className="sidenav-username">Loading...</p>
+          </>
+        ) : (
+          <>
+            <img
+              src={userDetails?.profilePicture ?? sidenavIcons.profile}
+              alt={userDetails?.profilePicture ?? "profile picture"}
+              className="sidenav-profile-picture"
+            />
+            <p className="sidenav-username">{userDetails?.username}</p>
+            <p className="sidenav-email">{userDetails?.email}</p>
+          </>
         )}
       </div>
       <div className="sidenavbar">
@@ -153,7 +150,6 @@ export default function SideNavbar() {
               isActive={false}
               title="Logout"
               onClick={logoutFn}
-
             />
           </div>
         </div>

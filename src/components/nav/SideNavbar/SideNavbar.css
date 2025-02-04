@@ -52,7 +52,7 @@
     background-color: #ff6767;
     padding-top: 180px;
     border: none;
-    border-radius: 8px;
+    border-top-right-radius: 8px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -143,9 +143,7 @@
 
     .sidenavbar {
         padding-top: 100px;
-        border-radius: 0;
         height: calc(100vh - 70px);
-        margin-top: 70px;
     }
 
     .sidenav-user-details {
@@ -183,6 +181,7 @@
 
     .sidenavbar {
         padding-top: 80px;
+        margin-top: 70px;
     }
 
     .sidenav-user-details {
