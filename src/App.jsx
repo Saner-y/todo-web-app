@@ -7,9 +7,11 @@ import MainCard from "./components/card/MainCard/MainCard.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import { SearchProvider } from './context/SearchContext';
 import AddTask from './pages/AddTask/AddTask.jsx';
+import { TaskProvider } from './context/TaskContext.jsx';
 
 function App() {
     return (
+        <TaskProvider>
         <SearchProvider>
             <Router>
                 <Routes>
@@ -35,6 +37,7 @@ function App() {
                 </Routes>
             </Router>
         </SearchProvider>
+        </TaskProvider>
     );
 }
 

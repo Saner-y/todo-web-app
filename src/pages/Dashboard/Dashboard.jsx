@@ -7,7 +7,7 @@ import SideNavbar from "../../components/nav/SideNavbar/SideNavbar";
 import { TaskStatusCard } from "../../components/card/TaskStatusCard/TaskStatusCard";
 import MainCard from "../../components/card/MainCard/MainCard";
 import AddTask from "../AddTask/AddTask";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "./Dashboard.css";
 import {
   dashboardHeaderIcon,
@@ -15,6 +15,7 @@ import {
   completedTasksIcon,
   addIcon,
 } from "../../assets/index.js";
+import { useTasks } from "../../context/TaskContext";
 
 // Bileşen parçaları
 const DashboardHeader = ({ isSidebarOpen, toggleSidebar }) => (
@@ -58,11 +59,13 @@ const SearchResults = ({ tasks, onTaskUpdate }) => {
           image={task.image}
           onTaskUpdate={onTaskUpdate}
         />
-
       ))}
     </div>
   );
 };
+
+
+
 
 const TodoSection = ({ todaysTasks, onAddTask, onTaskUpdate }) => (
   <div className="dashboard-page-content-todo-section">
@@ -96,7 +99,6 @@ const TodoSection = ({ todaysTasks, onAddTask, onTaskUpdate }) => (
           image={doc.data().image}
           onTaskUpdate={onTaskUpdate}
         />
-
       ))}
     </div>
   </div>
@@ -121,7 +123,6 @@ const CompletedTasksSection = ({ completedTasks, onTaskUpdate }) => (
           image={doc.data().image}
           onTaskUpdate={onTaskUpdate}
         />
-
       ))}
     </div>
   </div>
@@ -136,9 +137,11 @@ export default function Dashboard() {
     statusPercentage: { completed: 0, inProgress: 0, notStarted: 0 },
     tasks: [],
     isAddTaskDialogOpen: false,
+    username: null,
+    selectedDateTasks: [],
   });
 
-  const { currentUser } = useAuth();
+  const { currentUser, returnUsername } = useAuth();
   const {
     loading,
     getCompletedTasks,
@@ -147,6 +150,29 @@ export default function Dashboard() {
     getAllTasks,
   } = useTask();
   const { searchTerm, isSearchActive } = useSearch();
+  const { isSelectedDateTasksActive, selectedDate, selectedDateTasks, setSelectedDateTasks } = useTasks();
+
+  const filterTasksByDate = useCallback((tasks, targetDate) => {
+    if (!targetDate || !tasks?.length) return [];
+    
+    // Seçilen tarihi UTC'ye çevirip gün başlangıcına ayarla
+    const startOfDay = new Date(targetDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    
+    // Gün sonunu ayarla
+    const endOfDay = new Date(targetDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    return tasks.filter(task => {
+      const taskDate = task.data().assignedOn?.toDate();
+      if (!taskDate) return false;
+      
+      // Timestamp'i locale çevir ve karşılaştır
+      const localTaskDate = new Date(taskDate);
+      return localTaskDate >= startOfDay && localTaskDate <= endOfDay;
+    });
+  }, []);
+
 
   const filteredTasks = useMemo(() => {
     if (!isSearchActive || !searchTerm) return [];
@@ -156,10 +182,9 @@ export default function Dashboard() {
       return {
         id: task.id,
         ...data,
-        assignedOn: data.assignedOn, // Timestamp objesi olarak bırak
+        assignedOn: data.assignedOn,
       };
     });
-
 
     return allTasks.filter(
       (task) =>
@@ -178,6 +203,18 @@ export default function Dashboard() {
           getAllTasks(),
         ]);
 
+      const username = await returnUsername();
+      
+      // Filter tasks for selected date if active
+      if (selectedDate) {
+        const filteredDateTasks = filterTasksByDate(allTasks.docs, selectedDate);
+        setSelectedDateTasks(filteredDateTasks.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          assignedOn: doc.data().assignedOn?.toDate().toLocaleDateString()
+        })));
+      }
+
       setState((prev) => ({
         ...prev,
         completedTasks,
@@ -185,10 +222,11 @@ export default function Dashboard() {
         statusPercentage: statusStats,
         tasks: allTasks.docs,
         userDetails: currentUser?.displayName,
+        username: username,
       }));
     } catch (error) {
       console.error("Dashboard data loading error:", error);
-      toast.error("Veriler yüklenirken hata oluştu");
+      toast.error("Error loading data");
     }
   }, [
     getCompletedTasks,
@@ -196,12 +234,27 @@ export default function Dashboard() {
     calculateTaskStats,
     getAllTasks,
     currentUser,
+    selectedDate,
+    filterTasksByDate,
+    setSelectedDateTasks
   ]);
 
   useEffect(() => {
     if (!currentUser) return;
     refreshDashboard();
   }, [currentUser, refreshDashboard]);
+
+  // Update when selected date changes
+  useEffect(() => {
+    if (selectedDate && state.tasks.length > 0) {
+      const filteredDateTasks = filterTasksByDate(state.tasks, selectedDate);
+      setSelectedDateTasks(filteredDateTasks.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        assignedOn: doc.data().assignedOn?.toDate().toLocaleDateString()
+      })));
+    }
+  }, [selectedDate, state.tasks, filterTasksByDate, setSelectedDateTasks]);
 
   const handleCloseDialog = useCallback(
     async (shouldRefresh = false) => {
@@ -228,6 +281,44 @@ export default function Dashboard() {
     );
   }
 
+  const SelectedDateTasks = ({ tasks, selectedDate, onTaskUpdate }) => {
+    if (!tasks?.length) {
+      return (
+        <div className="no-results">
+          <p>No tasks for {selectedDate?.toLocaleDateString()}</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="dashboard-page-content-todo-section">
+        <div className="dashboard-page-todo-section-header">
+          <div className="dashboard-page-status-card-header">
+            <img src={tasksIcon} alt="tasks" />
+            <h3 className="dashboard-page-card-title">
+              Tasks for {selectedDate?.toLocaleDateString()}
+            </h3>
+          </div>
+        </div>
+        <div className="dashboard-page-todo-cards">
+          {tasks.map((task) => (
+            <MainCard
+              key={task.id}
+              taskId={task.id}
+              cardTitle={task.title}
+              cardBody={task.body}
+              priority={task.priority}
+              status={task.status}
+              assignedOn={task.assignedOn}
+              image={task.image}
+              onTaskUpdate={onTaskUpdate}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="dashboard-page">
       <div className="dashboard-page-body">
@@ -238,13 +329,19 @@ export default function Dashboard() {
 
         <div className="dashboard-page-content">
           <h1 className="dashboard-page-content-welcome-back">
-            Welcome back, {state.userDetails}
+            Welcome back, {state.username}
           </h1>
 
           <div className="dashboard-page-content-cards">
             {isSearchActive ? (
               <SearchResults
                 tasks={filteredTasks}
+                onTaskUpdate={refreshDashboard}
+              />
+            ) : isSelectedDateTasksActive ? (
+              <SelectedDateTasks
+                tasks={selectedDateTasks}
+                selectedDate={selectedDate}
                 onTaskUpdate={refreshDashboard}
               />
             ) : (

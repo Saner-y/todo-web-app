@@ -17,7 +17,7 @@ import {
     MissingEmailAddress
 } from '../utils/ErrorHandling.js';
 import { onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export const useAuth = () => {
     const [currentUser, setCurrentUser] = useState(null);
@@ -197,6 +197,17 @@ export const useAuth = () => {
         }
     };
 
+    const returnUsername = async () => {
+        try {
+            const userDetails = await getUserDetails();
+            return userDetails.username;
+        } catch (error) {
+            console.error('Kullanıcı adı alınırken hata:', error);
+            return null;
+        }
+    }
+
+
     return {
         currentUser,
         loading,
@@ -206,6 +217,7 @@ export const useAuth = () => {
         loginWithTwitter, 
         forgotPassword, 
         logout,
-        getUserDetails
+        getUserDetails,
+        returnUsername
     };
 };

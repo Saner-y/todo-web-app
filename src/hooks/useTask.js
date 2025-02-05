@@ -178,6 +178,37 @@ export const useTask = () => {
     }
   }, [getTasksRef]);
 
+  /* const getTodayExtremeTasks = useCallback(async () => {
+    setLoading(true);
+    try {
+      const tasksRef = getTasksRef();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const q = query(
+        tasksRef,
+        where("assignedOn", ">=", Timestamp.fromDate(today)),
+        where("assignedOn", "<", Timestamp.fromDate(tomorrow))
+      );
+      
+      const extremeTasks = query(q, where("priority", "==", "Extreme"));
+      const extremeTasksSnapshot = await getDocs(extremeTasks);
+      const extremeTasksTitles = extremeTasksSnapshot.docs.map((doc) => doc.data().title);
+      return extremeTasksTitles;
+    } catch (err) {
+      setError(err.message);
+
+      toast.error("Günlük görevler yüklenirken hata oluştu");
+
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [getTasksRef]); */
+  
+
   return {
     loading,
     error,
@@ -188,5 +219,6 @@ export const useTask = () => {
     updateTask,
     deleteTask,
     getAllTasks,
+    // getTodayExtremeTasks,
   };
 };
