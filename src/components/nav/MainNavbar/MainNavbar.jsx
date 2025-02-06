@@ -11,6 +11,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
 import { useTasks } from "../../../context/TaskContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function MainNavbar({ headerLogo, toggleSidebar }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -20,6 +21,7 @@ export default function MainNavbar({ headerLogo, toggleSidebar }) {
   const date = dateObject.toLocaleDateString().replaceAll(".", "/");
   const { currentUser } = useAuth();
   const { setSelectedDateTasks, setSelectedDate, setIsSelectedDateTasksActive } = useTasks();
+  const navigate = useNavigate();
 
   const getNotification = async () => {
     const today = new Date().toISOString().split("T")[0];
@@ -43,10 +45,12 @@ export default function MainNavbar({ headerLogo, toggleSidebar }) {
     setSelectedDateTasks(
       selectedDateTasks.map((task) => ({ id: task.id, ...task.data() }))
     ); 
-    setIsSelectedDateTasksActive(true);
     setSelectedDate(selectedDate);
     setShowDatePicker(false);
+    setIsSelectedDateTasksActive(true);
   };
+
+
 
   return (
     <nav className="main-navbar">
@@ -56,9 +60,16 @@ export default function MainNavbar({ headerLogo, toggleSidebar }) {
         <img src={menuIcon} alt="menu" />
       </button>
       <div className="main-navbar-logo">
-        <img src={headerLogo} alt="logo" />
+        <img src={headerLogo} alt="logo" onClick={() => {
+          if(location.pathname === "/dashboard") {
+            window.location.reload();
+          } else {
+            navigate("/dashboard");
+          }
+        }} />
       </div>
       <SearchBar
+
         placeholder="Search your tasks..."
         onChange={(e) => {
           setSearchTerm(e.target.value);
@@ -73,7 +84,6 @@ export default function MainNavbar({ headerLogo, toggleSidebar }) {
             alt="calendar"
             onClick={() => {
               setShowDatePicker(!showDatePicker);
-              setIsSelectedDateTasksActive(false);
             }}
           />
 
@@ -84,8 +94,9 @@ export default function MainNavbar({ headerLogo, toggleSidebar }) {
                 onChange={handleDateSelect}
                 onClickOutside={() => {
                   setShowDatePicker(false);
-                  setIsSelectedDateTasksActive(false);
                 }}
+
+
               />
             </div>
 

@@ -67,6 +67,22 @@ export const useTask = () => {
     }
   }, [getTasksRef]);
 
+  const getVitalTasks = useCallback(async () => {
+    setLoading(true);
+    try {
+      const tasksRef = getTasksRef();
+      const q = query(tasksRef, where("priority", "==", "Extreme"));
+      const snapshot = await getDocs(q);
+      return snapshot;
+    } catch (err) {
+      setError(err.message);
+      toast.error("Önemli görevler yüklenirken hata oluştu");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [getTasksRef]);
+
   const calculateTaskStats = useCallback(async () => {
     setLoading(true);
     try {
@@ -219,6 +235,7 @@ export const useTask = () => {
     updateTask,
     deleteTask,
     getAllTasks,
+    getVitalTasks,
     // getTodayExtremeTasks,
   };
 };

@@ -139,9 +139,14 @@ export default function SideNavbar() {
                 title={title}
                 isActive={isActive}
                 onClick={() => {
-                  navigate(`/${id}`);
+                  if(isActive) {
+                    window.location.reload();
+                  } else {
+                    navigate(`/${id}`);
+                  }
                 }}
               />
+
             ))}
           </div>
           <div className="sidenav-logout">

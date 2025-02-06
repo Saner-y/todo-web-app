@@ -6,6 +6,7 @@ export function TaskProvider({ children }) {
   const [selectedDateTasks, setSelectedDateTasks] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isSelectedDateTasksActive, setIsSelectedDateTasksActive] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const value = {
     selectedDateTasks,
@@ -13,8 +14,11 @@ export function TaskProvider({ children }) {
     selectedDate,
     setSelectedDate,
     isSelectedDateTasksActive,
-    setIsSelectedDateTasksActive
+    setIsSelectedDateTasksActive,
+    selectedTask,
+    setSelectedTask
   };
+
 
   return (
     <TaskContext.Provider value={value}>

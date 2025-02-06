@@ -2,39 +2,59 @@ import "./MainCard.css";
 import { useState, useRef, useEffect } from "react";
 import { useTask } from "../../../hooks/useTask";
 import AddTask from "../../../pages/AddTask/AddTask";
+import { useTasks } from "../../../context/TaskContext";
 
 export default function MainCard({
-  cardTitle,
-  cardBody,
-  status,
-  priority,
-  assignedOn,
-  image,
-  taskId,
+  task,
   onTaskUpdate,
 }) {
+  // Helper function to get task data consistently
+  const getTaskData = () => {
+    // If task is a Firestore document (has data() method)
+    if (typeof task.data === 'function') {
+      return task.data();
+    }
+    // If task is already plain data
+    return task;
+  };
+
+  const taskData = getTaskData();
+  
+  // Format the date consistently
+  const assignedOn = taskData.assignedOn instanceof Date 
+    ? taskData.assignedOn.toLocaleDateString()
+    : typeof taskData.assignedOn === 'string' 
+      ? taskData.assignedOn 
+      : taskData.assignedOn?.toDate?.()?.toLocaleDateString() || '';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const { updateTask, deleteTask } = useTask();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const statusClass = `status-${status.toLowerCase().replace(" ", "-")}`;
-  const priorityClass = `priority-${priority.toLowerCase().replace(" ", "-")}`;
+  const statusClass = `status-${taskData.status.toLowerCase().replace(" ", "-")}`;
+
+  const priorityClass = `priority-${taskData.priority.toLowerCase().replace(" ", "-")}`;
+  const { setSelectedTask } = useTasks();
+
 
   const handleStatusChange = async (newStatus) => {
     try {
-      await updateTask(taskId, { status: newStatus });
+      await updateTask(task.id, { status: newStatus });
       setIsMenuOpen(false);
       onTaskUpdate();
     } catch (error) {
       console.error("Status güncellenirken hata:", error);
     }
+
+
   };
 
   const handlePriorityChange = async (newPriority) => {
     try {
-      await updateTask(taskId, { priority: newPriority });
+      await updateTask(task.id, { priority: newPriority });
       setIsMenuOpen(false);
       onTaskUpdate();
+
+
     } catch (error) {
       console.error("Priority güncellenirken hata:", error);
     }
@@ -43,16 +63,24 @@ export default function MainCard({
   const handleDelete = async () => {
     if (window.confirm("Bu görevi silmek istediğinize emin misiniz?")) {
       try {
-        await deleteTask(taskId);
+        await deleteTask(task.id);
         onTaskUpdate();
       } catch (error) {
         console.error("Görev silinirken hata:", error);
       }
+
     }
+
   };
+
+  const handleTaskClick = () => {
+    setSelectedTask(task);
+  };
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
+
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpen(false);
       }
@@ -70,10 +98,11 @@ export default function MainCard({
       <circle className={`status-circle ${statusClass}`} />
       <div className="main-card-header-body-wrapper">
         <div className="main-card-header">
-          <h1 className="main-card-header-title">{cardTitle}</h1>
+          <h1 className="main-card-header-title" onClick={handleTaskClick}>{taskData.title}</h1>
           <div className="menu-container" ref={menuRef}>
             <button
               className="main-card-header-edit-button"
+
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <div className="main-card-header-edit-button-circle-wrapper">
@@ -90,9 +119,11 @@ export default function MainCard({
                     <button
                       key={option}
                       className={`status-option ${
-                        status === option ? "active" : ""
-                      } ${status === option ? statusClass : ""}`}
+                        taskData.status === option ? "active" : ""
+                      } ${taskData.status === option ? statusClass : ""}`}
                       onClick={() => handleStatusChange(option)}
+
+
                     >
                       {option}
                     </button>
@@ -105,10 +136,12 @@ export default function MainCard({
                     <button
                       key={option}
                       className={`priority-option ${
-                        priority === option ? "active" : ""
-                      } ${priority === option ? priorityClass : ""}`}
+                        taskData.priority === option ? "active" : ""
+                      } ${taskData.priority === option ? priorityClass : ""}`}
                       onClick={() => handlePriorityChange(option)}
+
                     >
+
                       {option}
                     </button>
                   ))}
@@ -133,30 +166,35 @@ export default function MainCard({
           </div>
         </div>
         <div className="main-card-body">
-          <p className="main-card-body-text">{cardBody}</p>
+          <p className="main-card-body-text">{taskData.body}</p>
 
-          <img src={image} alt={"image"} className="main-card-body-image" />
+
+          <img src={taskData.image} alt={"image"} className="main-card-body-image" />
         </div>
         <div className="main-card-footer">
+
           <div className="main-card-footer-status">
             <p>
               Priority:{" "}
               <span
                 className={`main-card-footer-priority-text ${priorityClass}`}
               >
-                {priority}
+                {taskData.priority}
               </span>
             </p>
+
             <p>
               Status:{" "}
               <span className={`main-card-footer-status-text ${statusClass}`}>
-                {status}
+                {taskData.status}
               </span>
             </p>
+
           </div>
           <p className="main-card-footer-date">Assigned on: {assignedOn}</p>
         </div>
       </div>
+
       {isEditDialogOpen && (
         <div
           className="dialog-overlay"
@@ -166,17 +204,21 @@ export default function MainCard({
             <AddTask
               onClose={() => setIsEditDialogOpen(false)}
               initialData={{
-                title: cardTitle,
+                title: taskData.title,
                 date: `${assignedOn.split(".")[2]}-${assignedOn.split(".")[1]}-${
                   assignedOn.split(".")[0]
                 }`,
-                description: cardBody,
-                status: status,
-                priority: priority,
-                image: image,
-                id: taskId,
+                description: taskData.body,
+                status: taskData.status,
+                priority: taskData.priority,
+
+
+
+                image: taskData.image,
+                id: task.id,
               }}
               onTaskUpdate={onTaskUpdate}
+
             />
           </div>
         </div>

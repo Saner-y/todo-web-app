@@ -60,10 +60,13 @@ export default function Login() {
     return (
         <div className="login-bg">
             <div className="form">
-                <div className="form-input">
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                }} className="form-input">
                     <h2 className="title">Sign In</h2>
                     <MainInput icon={loginIcons.mail} placeholder="Enter E-mail Address" type="email"
                                onChange={(e) => setEmail(e.target.value)} iconAlt="mail" text={email}/>
+
                     <MainInput icon={loginIcons.lock} placeholder="Enter Password" type="password"
                                onChange={(e) => setPassword(e.target.value)} iconAlt="password" text={password}/>
                     <div className="footer-input">
@@ -72,7 +75,7 @@ export default function Login() {
                         <p onClick={onForgotPassword} className="forgot-password">Forgot Password?</p>
                     </div>
                     {loading && <p>Signing in...</p>}
-                    {!loading && <MainButton text="Sign in" onClick={onSubmit}/>}
+                    {!loading && <MainButton text="Sign in" onClick={onSubmit} type="submit"/>}
                     <hr/>
                     <div className="footer-div">
                         <div className="method-image-div">
@@ -85,7 +88,7 @@ export default function Login() {
                             navigate('/register')
                         }} className="create-account">Create One</span></p>
                     </div>
-                </div>
+                </form>
                 <img className="login-image" src={loginIcons.image} alt="login-image"/>
                 <ToastContainer
                     position="top-right"

@@ -8,6 +8,8 @@ import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import { SearchProvider } from './context/SearchContext';
 import AddTask from './pages/AddTask/AddTask.jsx';
 import { TaskProvider } from './context/TaskContext.jsx';
+import BaseView from './layouts/BaseView/BaseView.jsx';
+import VitalTask from './pages/VitalTask/VitalTask.jsx';
 
 function App() {
     return (
@@ -19,8 +21,7 @@ function App() {
                     <Route path="/register" element={<Register/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/dashboard" element={<Dashboard/>}/>
-                    <Route path="/vital-task" element={<SideNavbar email="asd@asd.com" profilePicture="src/assets/pp.jpg"
-                                                                   username="asdasd"/>}/>
+                    <Route path="/vital-task" element={<VitalTask/>}/>
                     <Route path="/my-task" element={<AddTask/>}/>
                     <Route path="/task-categories"
                            element={<SideNavbar email="asd@asd.com" profilePicture="src/assets/pp.jpg"
@@ -31,11 +32,11 @@ function App() {
                                                                image='src/assets/maincard-test-react.jpg'
                                                                cardTitle="Attend Nischal's Birthday Party" />}/>
                     <Route path="/help"
-                           element={<><MainNavbar headerLogo="src/assets/dashboard-header-react.svg"/><SideNavbar
-                               email="asd@asd.com" profilePicture="src/assets/pp.jpg" username="asdasd"/></>}/>
+                           element={<BaseView children={<h1>Help</h1>}/>}/>
                     {/* Add other routes here */}
                 </Routes>
             </Router>
+
         </SearchProvider>
         </TaskProvider>
     );
