@@ -2,7 +2,7 @@ import TaskDetailCard from "../../components/card/TaskDetailCard/TaskDetailCard"
 import BaseView from "../../layouts/BaseView/BaseView";
 import { useTasks } from "../../context/TaskContext";
 import { useTask } from "../../hooks/useTask";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./VitalTask.css";
 import MainCard from "../../components/card/MainCard/MainCard";
 

@@ -32,6 +32,8 @@ import uploadIconSrc from "../../public/assets/upload-image-react.svg";
 import userIconSrc from "../../public/assets/user-react.svg";
 import visibleIconSrc from "../../public/assets/visible-react.svg";
 import xIconSrc from "../../public/assets/x-react.svg";
+import trashIconSrc from "../../public/assets/trash-react.svg";
+import editIconSrc from "../../public/assets/edit-react.svg";
 
 export const addIcon = addIconSrc;
 export const calendarIcon = calendarIconSrc;
@@ -67,6 +69,8 @@ export const uploadIcon = uploadIconSrc;
 export const userIcon = userIconSrc;
 export const visibleIcon = visibleIconSrc;
 export const xIcon = xIconSrc;
+export const trashIcon = trashIconSrc;
+export const editIcon = editIconSrc;
 export const sidenavIcons = {
   dashboardActive: dashboardActiveIcon,
   dashboard: dashboardIcon,

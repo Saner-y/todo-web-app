@@ -13,14 +13,14 @@ const TaskDetailCardHeader = ({ taskData }) => {
     return (
         <div className="task-detail-card-header">
             <div className="task-detail-card-header-left">
-                <img src={taskData.image} alt="task" />
+                <img src={taskData.image} alt="task" className="task-detail-image"/>
             </div>
             <div className="task-detail-card-header-right">
                 <h3 className="task-detail-card-title">{taskData.title}</h3>
 
 
-                <p className="task-detail-card-priority">Priority: {taskData.priority}</p>
-                <p className="task-detail-card-status">Status: {taskData.status}</p>
+                <p className={`task-detail-card-status-${taskData.priority.toLowerCase()}`}>Priority: <span>{taskData.priority}</span></p>
+                <p className={`task-detail-card-status-${taskData.status.toLowerCase()}`}>Status: <span>{taskData.status}</span></p>
                 <p className="task-detail-card-assigned-on">
                     Assigned On: {assignedOn}
 
@@ -34,13 +34,13 @@ const TaskDetailCardHeader = ({ taskData }) => {
 }
 
 const TaskDetailCardBody = ({ taskData }) => {
-    return (
-        <div className="task-detail-card-body">
-
-            <p className="task-detail-card-body-title">Task Title: {taskData.title}</p>
-            <p className="task-detail-card-body-text">Task Description: {taskData.body}</p>
-        </div>
-    )
+  return (
+      <div className="task-detail-card-body">
+          <p className="task-detail-card-body-text">
+              {taskData.body.replace(/\\n/g, '\n')}
+          </p>
+      </div>
+  )
 }
 
 const TaskDetailCardFooter = ({ onTaskUpdate, onTaskDelete }) => {
@@ -127,7 +127,7 @@ export default function TaskDetailCard({ task, onTaskUpdate }) {
           </div>
         </div>
       )}
-        </div></>):(<div className="task-detail-card-empty">
+        </div></>):(<div className="task-detail-card">
             <h3>No task selected</h3>
         </div>)
     )

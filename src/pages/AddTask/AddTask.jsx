@@ -92,9 +92,6 @@ export default function AddTask({ onClose, initialData, onTaskUpdate }) {
 
     setIsUploading(true);
     try {
-      // Eğer yeni bir resim yüklendiyse onu kullan
-      // Yüklenmedi ise ve initial resim varsa onu koru
-      // Her iki durum da yoksa null olarak bırak
       let imageUrl;
       if (initialData.image) {
         imageUrl = initialData.image;
@@ -104,9 +101,12 @@ export default function AddTask({ onClose, initialData, onTaskUpdate }) {
         imageUrl = null;
       }
 
+      // Description'ı Firebase'e kaydetmeden önce satır sonlarını özel karakterle değiştir
+      const formattedDescription = description.replace(/\n/g, "\\n");
+
       await updateTask(initialData.id, {
         title: title,
-        body: description,
+        body: formattedDescription, // Formatlanmış description'ı kullan
         status: status,
         image: imageUrl,
         priority: priority,
@@ -136,10 +136,13 @@ export default function AddTask({ onClose, initialData, onTaskUpdate }) {
         imageUrl = await uploadImage(imageFile);
       }
 
+      // Description'ı Firebase'e kaydetmeden önce satır sonlarını özel karakterle değiştir
+      const formattedDescription = description.replace(/\n/g, "\\n");
+
       await addTask({
         title: title,
         assignedOn: new Date(date),
-        body: description,
+        body: formattedDescription, // Formatlanmış description'ı kullan
         image: imageUrl,
         priority: priority,
         status: "Not Started",
@@ -267,6 +270,7 @@ export default function AddTask({ onClose, initialData, onTaskUpdate }) {
             placeholder="Task Description"
             className="add-task-dialog-description-textarea"
             onChange={(e) => setDescription(e.target.value)}
+            style={{ whiteSpace: "pre-wrap" }} // Bu satırı ekleyin
           />
 
           <div
