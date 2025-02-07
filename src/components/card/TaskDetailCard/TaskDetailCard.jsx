@@ -19,8 +19,8 @@ const TaskDetailCardHeader = ({ taskData }) => {
                 <h3 className="task-detail-card-title">{taskData.title}</h3>
 
 
-                <p className={`task-detail-card-status-${taskData.priority.toLowerCase()}`}>Priority: <span>{taskData.priority}</span></p>
-                <p className={`task-detail-card-status-${taskData.status.toLowerCase()}`}>Status: <span>{taskData.status}</span></p>
+                <p className={`task-detail-card-status ${taskData.priority.toLowerCase()}`}>Priority: <span>{taskData.priority}</span></p>
+                <p className={`task-detail-card-status ${taskData.status.toLowerCase()}`}>Status: <span>{taskData.status}</span></p>
                 <p className="task-detail-card-assigned-on">
                     Assigned On: {assignedOn}
 
