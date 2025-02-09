@@ -43,6 +43,7 @@ export default function VitalTask() {
     <div className="vital-task-page">
         <VitalTasksSection vitalTasks={vitalTasks} />
         <TaskDetailCard task={selectedTask} onTaskUpdate={() => {
+          window.location.reload();
           setSelectedTask(null);
         }} />
     </div>
